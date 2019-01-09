@@ -3,7 +3,6 @@ package set1
 import (
 	"github.com/pkg/errors"
 	"math"
-	"strconv"
 )
 
 const lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -56,7 +55,7 @@ func Hex2B64(in string) (string, error) {
 
 func convertPoint(pt []byte) ([]byte, error) {
 	// TODO: implement parsing ourselves
-	val, err := strconv.ParseInt(string(pt), 16, 64)
+	val, err := parsePoint(pt)
 	if err != nil {
 		return nil, errors.Wrap(err, "new error")
 	}
