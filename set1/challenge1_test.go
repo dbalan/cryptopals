@@ -30,3 +30,20 @@ func TestHex2B64(t *testing.T) {
 		assert.Equal(t, b64, c.Out)
 	}
 }
+
+func TestParsePoint(t *testing.T) {
+	cases := []struct {
+		In  string
+		Out int64
+	}{
+		{"42", 66},
+		{"0", 0},
+		{"c0fee", 790510},
+	}
+
+	for _, c := range cases {
+		val, err := parsePoint([]byte(c.In))
+		assert.Nil(t, err)
+		assert.Equal(t, val, c.Out)
+	}
+}

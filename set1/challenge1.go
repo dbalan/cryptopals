@@ -2,6 +2,7 @@ package set1
 
 import (
 	"github.com/pkg/errors"
+	"math"
 	"strconv"
 )
 
@@ -62,5 +63,28 @@ func convertPoint(pt []byte) ([]byte, error) {
 
 	low := val & 0x3F
 	high := (val >> 6) & 0x3F
+
 	return []byte{lookup[high], lookup[low]}, nil
+}
+
+// hex bytestream to value
+func parsePoint(pt []byte) (int64, error) {
+	var acc int64 = 0
+	l := len(pt)
+
+	var v int64
+	for k, p := range pt {
+		if p >= '0' && p <= '9' {
+			v = int64(p - '0')
+		} else if p >= 'A' && p <= 'F' {
+			v = int64(p - 'A' + 10)
+		} else if p >= 'a' && p <= 'f' {
+			v = int64(p - 'a' + 10)
+		} else {
+			return -1, errors.New("NOT HEX")
+		}
+		pos := l - (k + 1)
+		acc += v * int64(math.Pow(16, float64(pos)))
+	}
+	return acc, nil
 }
