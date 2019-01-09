@@ -1,36 +1,46 @@
 package set1
 
 import (
-	"fmt"
+	"github.com/pkg/errors"
 	"strconv"
 )
 
-var Lookup = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789+/")
+const lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
-// covert a 2 sextets into base64 bytes
-func convert(k int64) []byte {
-	lower := k & 0x3F
-	higher := (k >> 6) & 0x3F
-	return []byte{Lookup[higher], Lookup[lower]}
-}
+// Hex2B64 converts a hexadecimal string to its base64 representation
+func Hex2B64(in string) (string, error) {
+	resp := []byte{}
+	// in is a UTF-8 encoded hex value
+	// work on bytes
+	val := []byte(in)
+	l := len(val)
 
-func hex(a string) int64 {
-	parsed, _ := strconv.ParseInt(a, 16, 64)
-	return parsed
-}
-
-func hex2base64(a string) string {
-	// 3 hex points = 12 bits == 2 base64 values
-	l := len(a)
+	// group them into 3 (3 in hex == 12 bits == 2 sextets)
 	i := 0
 	for i < l {
-		hexPoints := a[i : i+3]
-		fmt.Println(string(convert(hex(hexPoints))))
-		if (i + 3) > l {
+		if l < i+3 {
 			// fragment
-			fmt.Println("fragment", a[i+3:l])
+			return "", errors.New("NOT IMPL")
 		}
-		i = i + 3
+		point := val[i : i+3]
+		frag, err := convertPoint(point)
+		resp = append(resp, frag...)
+		if err != nil {
+			return "", err
+		}
+
+		i += 3
 	}
-	return a
+	return string(resp), nil
+}
+
+func convertPoint(pt []byte) ([]byte, error) {
+	// TODO: implement parsing ourselves
+	val, err := strconv.ParseInt(string(pt), 16, 64)
+	if err != nil {
+		return nil, err
+	}
+	low := val & 0x3F
+	high := (val >> 6) & 0x3F
+	return []byte{lookup[high], lookup[low]}, nil
 }
