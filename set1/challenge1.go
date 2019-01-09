@@ -23,28 +23,25 @@ func Hex2B64(in string) (string, error) {
 	// group them into 3 (3 in hex == 12 bits == 2 sextets)
 	i := 0
 	for i < l {
+		var point []byte
+
 		if l < i+3 {
-			// fragment
-			point := val[i:l]
+			// final fragment
+			point = val[i:l]
+
 			// pad with zero
 			for p := 0; p < 3-len(point); p++ {
 				point = append(point, '0')
 			}
-			frag, err := convertPoint(point)
-			if err != nil {
-				return "", err
-			}
-			resp = append(resp, frag...)
-			break
+		} else {
+			point = val[i : i+3]
 		}
 
-		point := val[i : i+3]
 		frag, err := convertPoint(point)
 		resp = append(resp, frag...)
 		if err != nil {
 			return "", err
 		}
-
 		i += 3
 	}
 
