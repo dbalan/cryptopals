@@ -2,7 +2,7 @@ package set1
 
 func encodeHex(n byte) byte {
 	switch {
-	case int(n) >= 0 && int(n) <= 10:
+	case int(n) >= 0 && int(n) <= 9:
 		return n + '0'
 	default:
 		return byte(int(n)-10) + 'a'
@@ -35,4 +35,13 @@ func decodeHexString(s string) []byte {
 		i += 2
 	}
 	return resp
+}
+
+// b00001011 -> "0b"
+// int() -> 11
+// "0b"
+func hexPrettyPrint(b byte) string {
+	left := encodeHex(b >> 4 & 0xF)
+	right := encodeHex(b & 0xF)
+	return string(left) + string(right)
 }
