@@ -13,24 +13,3 @@ func FixedXOR(fst string, snd string) (string, error) {
 	}
 	return string(resp), nil
 }
-
-func encodeHex(n byte) byte {
-	switch {
-	case int(n) >= 0 && int(n) <= 10:
-		return n + '0'
-	default:
-		return byte(int(n)-10) + 'a'
-	}
-}
-
-func decodeHex(n byte) byte {
-	switch {
-	case n >= '0' && n <= '9':
-		return n - '0'
-	case n >= 'a' && n <= 'f':
-		return n - 'a' + 10
-	case n >= 'A' && n <= 'F':
-		return n - 'A' + 10
-	}
-	panic("errored out")
-}
