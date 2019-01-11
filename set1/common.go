@@ -45,3 +45,8 @@ func hexPrettyPrint(b byte) string {
 	right := encodeHex(b & 0xF)
 	return string(left) + string(right)
 }
+
+// takes a b64 encoded string as input and returns correspoinding bytes
+func base64decode(in []byte) []byte {
+	return in
+}

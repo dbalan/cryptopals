@@ -1,67 +1,70 @@
 package set1
 
 import (
-	"strings"
+	"bytes"
 )
 
-var freqEn = map[string]float64{
-	"a": 8.167,
-	"b": 1.492,
-	"c": 2.782,
-	"d": 4.253,
-	"e": 12.70,
-	"f": 2.228,
-	"g": 2.015,
-	"h": 6.094,
-	"i": 6.966,
-	"j": 0.153,
-	"k": 0.772,
-	"l": 4.025,
-	"m": 2.406,
-	"n": 6.749,
-	"o": 7.507,
-	"p": 1.929,
-	"q": 0.095,
-	"r": 5.987,
-	"s": 6.327,
-	"t": 9.056,
-	"u": 2.758,
-	"v": 0.978,
-	"w": 2.360,
-	"x": 0.150,
-	"y": 1.974,
-	"z": 0.074,
+type PTKeyPair struct {
+	PT  []byte
+	Key byte
 }
 
-func decryptSingleXOR(ct string, key byte) string {
-	raw := decodeHexString(ct)
+var freqEn = map[byte]float64{
+	'a': 8.167,
+	'b': 1.492,
+	'c': 2.782,
+	'd': 4.253,
+	'e': 12.70,
+	'f': 2.228,
+	'g': 2.015,
+	'h': 6.094,
+	'i': 6.966,
+	'j': 0.153,
+	'k': 0.772,
+	'l': 4.025,
+	'm': 2.406,
+	'n': 6.749,
+	'o': 7.507,
+	'p': 1.929,
+	'q': 0.095,
+	'r': 5.987,
+	's': 6.327,
+	't': 9.056,
+	'u': 2.758,
+	'v': 0.978,
+	'w': 2.360,
+	'x': 0.150,
+	'y': 1.974,
+	'z': 0.074,
+}
 
+func decryptSingleXOR(ct []byte, key byte) []byte {
 	resp := []byte{}
-	for _, c := range raw {
+	for _, c := range ct {
 		resp = append(resp, c^key)
-	}
-	return string(resp)
-}
-
-func allPossibleDecryptions(ct string) []string {
-	resp := []string{}
-
-	for i := 0; i <= 0xff; i++ {
-		resp = append(resp, decryptSingleXOR(ct, byte(i)))
 	}
 	return resp
 }
 
-func getCharFreq(s string) map[string]float64 {
-	resp := map[string]float64{}
+func allPossibleDecryptions(ct []byte) []PTKeyPair {
+	resp := []PTKeyPair{}
+
+	for i := 0; i <= 0xff; i++ {
+		pt := decryptSingleXOR(ct, byte(i))
+		resp = append(resp, PTKeyPair{pt, byte(i)})
+	}
+	return resp
+}
+
+func getCharFreq(s []byte) map[byte]float64 {
+	resp := map[byte]float64{}
 
 	for _, c := range s {
-		var cStr string
-
+		var cStr byte
 		if c >= 'a' && c <= 'z' {
-			cStr = string(c)
+			cStr = c
 		} else if c >= 'A' && c <= 'Z' {
-			cStr = string(c + 32)
+			cStr = byte(c + 32)
 		} else {
 			continue
 		}
@@ -83,7 +86,7 @@ func getCharFreq(s string) map[string]float64 {
 	return resp
 }
 
-func dot(v, canon map[string]float64) float64 {
+func dot(v, canon map[byte]float64) float64 {
 	acc := 0.0
 	for k, v := range v {
 		acc += canon[k] * v
@@ -91,8 +94,8 @@ func dot(v, canon map[string]float64) float64 {
 	return acc
 }
 
-func score(s string) float64 {
-	words := strings.Split(s, " ")
+func score(s []byte) float64 {
+	words := bytes.Split(s, []byte(" "))
 	acc := 0.0
 	for _, w := range words {
 		freq := getCharFreq(w)
@@ -101,16 +104,16 @@ func score(s string) float64 {
 	return acc
 }
 
-func BestPT(ct string) string {
+func BestPT(ct []byte) ([]byte, byte) {
 	curHigh := 0.0
-	result := ""
+	result := PTKeyPair{}
 
-	for _, pt := range allPossibleDecryptions(ct) {
-		curScore := score(pt)
+	for _, ptkp := range allPossibleDecryptions(ct) {
+		curScore := score(ptkp.PT)
 		if curScore > curHigh {
 			curHigh = curScore
-			result = pt
+			result = ptkp
 		}
 	}
-	return result
+	return result.PT, result.Key
 }

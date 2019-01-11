@@ -9,7 +9,7 @@ func detectCipherText(in []string) string {
 	low := float64(0xffffffff)
 	cipher := ""
 	for _, pt := range in {
-		cur := score(pt)
+		cur := score([]byte(pt))
 		if cur < low {
 			low = cur
 			cipher = pt
