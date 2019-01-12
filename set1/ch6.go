@@ -48,7 +48,7 @@ func findKeySize(data []byte) int {
 
 	for i := 3; i <= 40; i++ {
 		dist := normDist(data, i, 3)
-		fmt.Println("i: ", i, " dist: ", dist)
+		fmt.Println("KEYSCORE: i: ", i, " dist: ", dist)
 		if dist < minSoFar {
 			bestKeySize = i
 			minSoFar = dist
@@ -75,8 +75,15 @@ func sliceAndDice(data []byte, keysize int) [][]byte {
 func findKey(data []byte, keysize int) []byte {
 	slices := sliceAndDice(data, keysize)
 	key := []byte{}
-	for _, s := range slices {
+	for si, s := range slices {
 		_, k := BestPT(s)
+		resp := possibleKeysWithPT(s, 5)
+
+		fmt.Println("SLICE IND: ", si)
+		for _, r := range resp {
+			fmt.Printf("KEY: %d SCORE: %f PT: %s\n", r.Key, r.Score, r.PT[0:20])
+		}
+		fmt.Println("SLICE END")
 		key = append(key, k)
 	}
 	return key

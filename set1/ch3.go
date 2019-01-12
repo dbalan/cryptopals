@@ -111,6 +111,11 @@ func dot(v, canon map[byte]float64) float64 {
 }
 
 func score(s []byte) float64 {
+	freq := getCharFreq(s)
+	return dot(freq, freqEn)
+}
+
+func scoreByWord(s []byte) float64 {
 	words := bytes.Split(s, []byte(" "))
 	acc := 0.0
 	for _, w := range words {
@@ -126,12 +131,28 @@ func possibleKeysWithPT(ct []byte, num int) (resp []PTKeyPair) {
 	return ptkp[0:num]
 }
 
+func countCaps(pt []byte) int {
+	acc := 0
+	for _, l := range pt {
+		if l >= byte('A') && l <= byte('Z') {
+			acc += 1
+		}
+	}
+	return acc
+}
+
 func BestPT(ct []byte) ([]byte, byte) {
 	curHigh := 0.0
 	result := PTKeyPair{}
 
 	for _, ptkp := range allPossibleDecryptions(ct) {
-		if ptkp.Score > curHigh {
+		if ptkp.Score == curHigh {
+			// if freq is same - one with less caps wins
+			if countCaps(result.PT) > countCaps(ptkp.PT) {
+				result = ptkp
+			}
+
+		} else if ptkp.Score > curHigh {
 			curHigh = ptkp.Score
 			result = ptkp
 		}
