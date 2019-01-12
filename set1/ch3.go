@@ -146,13 +146,7 @@ func BestPT(ct []byte) ([]byte, byte) {
 	result := PTKeyPair{}
 
 	for _, ptkp := range allPossibleDecryptions(ct) {
-		if ptkp.Score == curHigh {
-			// if freq is same - one with less caps wins
-			if countCaps(result.PT) > countCaps(ptkp.PT) {
-				result = ptkp
-			}
-
-		} else if ptkp.Score > curHigh {
+		if ptkp.Score > curHigh {
 			curHigh = ptkp.Score
 			result = ptkp
 		}
