@@ -37,3 +37,30 @@ func TestHexPrettyPrint(t *testing.T) {
 		assert.Equal(t, c.Out, out)
 	}
 }
+
+func TestB64Frag(t *testing.T) {
+	cs := []struct {
+		In  string
+		Out string
+	}{
+		{"TWFu", "Man"},
+		{"MTI=", "12"},
+		{"MQ==", "1"},
+		{"S2V5Ym9hcmRJbnRlcnJ1cHQ=", "KeyboardInterrupt"},
+	}
+	for _, c := range cs {
+		decoded := base64decode([]byte(c.In))
+		assert.Equal(t, []byte(c.Out), decoded)
+	}
+
+}
+
+func TestFullSerialization(t *testing.T) {
+	input := "0e3647e8592d35514a081243582536ed3de6734059001e3f535ce6271032"
+
+	b64, err := Hex2B64(input)
+	assert.Nil(t, err)
+	decoded := base64decode([]byte(b64))
+	pretty := encodeHexString(decoded)
+	assert.Equal(t, input, pretty)
+}

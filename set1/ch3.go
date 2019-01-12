@@ -2,11 +2,27 @@ package set1
 
 import (
 	"bytes"
+	"sort"
 )
 
 type PTKeyPair struct {
-	PT  []byte
-	Key byte
+	PT    []byte
+	Key   byte
+	Score float64
+}
+
+type byScore []PTKeyPair
+
+func (s byScore) Len() int {
+	return len(s)
+}
+
+func (s byScore) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s byScore) Less(i, j int) bool {
+	return s[i].Score < s[j].Score
 }
 
 var freqEn = map[byte]float64{
@@ -51,7 +67,7 @@ func allPossibleDecryptions(ct []byte) []PTKeyPair {
 
 	for i := 0; i <= 0xff; i++ {
 		pt := decryptSingleXOR(ct, byte(i))
-		resp = append(resp, PTKeyPair{pt, byte(i)})
+		resp = append(resp, PTKeyPair{pt, byte(i), score(pt)})
 	}
 	return resp
 }
@@ -104,14 +120,19 @@ func score(s []byte) float64 {
 	return acc
 }
 
+func possibleKeysWithPT(ct []byte, num int) (resp []PTKeyPair) {
+	ptkp := allPossibleDecryptions(ct)
+	sort.Sort(sort.Reverse(byScore(ptkp)))
+	return ptkp[0:num]
+}
+
 func BestPT(ct []byte) ([]byte, byte) {
 	curHigh := 0.0
 	result := PTKeyPair{}
 
 	for _, ptkp := range allPossibleDecryptions(ct) {
-		curScore := score(ptkp.PT)
-		if curScore > curHigh {
-			curHigh = curScore
+		if ptkp.Score > curHigh {
+			curHigh = ptkp.Score
 			result = ptkp
 		}
 	}

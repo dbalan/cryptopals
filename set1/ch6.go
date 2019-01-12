@@ -1,7 +1,7 @@
 package set1
 
 import (
-//	"fmt"
+	"fmt"
 )
 
 func countBits(b byte) int {
@@ -43,12 +43,12 @@ func normDist(data []byte, keysize int, numBlocks int) float64 {
 }
 
 func findKeySize(data []byte) int {
-	minSoFar := normDist(data, 2, 3)
+	minSoFar := normDist(data, 2, 4)
 	bestKeySize := 2
 
 	for i := 3; i <= 40; i++ {
 		dist := normDist(data, i, 3)
-		//		fmt.Println("i: ", i, " dist: ", dist)
+		fmt.Println("i: ", i, " dist: ", dist)
 		if dist < minSoFar {
 			bestKeySize = i
 			minSoFar = dist
