@@ -11,7 +11,7 @@ import (
 
 func TestAESCBC(t *testing.T) {
 	// Twenty Thousand Leagues under the Sea :-)
-	pt := "On my arrival at New York the question was at its height.  The theory of the floating island, and the unapproachable sandbank, supported by minds little competent to form a judgment, was abandoned.  And, indeed, unless this shoal had a machine in its stomach, how could it change its position with such astonishing ra..."
+	pt := "On my arrival at New York the question was at its height.  The theory of the floating island, and the unapproachable sandbank, supported by minds little competent to form a judgment, was abandoned.  And, indeed, unless this shoal had a machine in its stomach, how could it change its position with such astonishing rapidity?"
 
 	blocksize := 16
 	key := "YELLOW SUBMARINE"
@@ -22,7 +22,6 @@ func TestAESCBC(t *testing.T) {
 
 	enc, err := EncAES128CBC([]byte(pt), iv, []byte(key))
 	assert.Nil(t, err)
-	assert.Equal(t, len(pt), len(enc))
 
 	dec, err := DecAES128CBC(enc, iv, []byte(key))
 	assert.Nil(t, err)
