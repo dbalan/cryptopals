@@ -14,8 +14,9 @@ func TestDetectAES128ECB(t *testing.T) {
 	data := string(body)
 
 	for _, ct := range strings.Split(data, "\n") {
-		if repeatingBlocks([]byte(ct)) {
-			fmt.Println("REPEATING BLOCKS: ", ct)
+		times := repeatingBlocks([]byte(ct))
+		if times > 0 {
+			fmt.Printf("REPEATING BLOCKS in (%d times): %s", times, ct)
 		}
 	}
 

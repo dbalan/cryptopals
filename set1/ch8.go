@@ -1,6 +1,6 @@
 package set1
 
-func repeatingBlocks(ct []byte) bool {
+func repeatingBlocks(ct []byte) (times int) {
 	blocks := [][]byte{}
 
 	for i := 0; i < len(ct); i += 16 {
@@ -10,10 +10,10 @@ func repeatingBlocks(ct []byte) bool {
 	for i := 0; i < len(blocks); i++ {
 		for j := i + 1; j < len(blocks); j++ {
 			if hammingDistance(blocks[i], blocks[j]) == 0 {
-				return true
+				times++
 			}
 		}
 	}
 
-	return false
+	return times
 }
