@@ -30,6 +30,11 @@ func TestAESCBC(t *testing.T) {
 
 // find solution to ch10
 func TestCh10(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+
+	}
+
 	body, err := ioutil.ReadFile("./10.txt")
 	assert.Nil(t, err)
 
@@ -46,5 +51,5 @@ func TestCh10(t *testing.T) {
 
 	dec, err := DecAES128CBC(decoded, iv, []byte(key))
 	assert.Nil(t, err)
-	fmt.Println("decrypted (partial): ", string(dec[0:10]))
+	fmt.Println("CH10: decrypted: ", string(dec))
 }

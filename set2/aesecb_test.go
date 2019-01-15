@@ -6,6 +6,10 @@ import (
 )
 
 func TestAESECB(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+
+	}
 	// Twenty Thousand Leagues under the Sea :-)
 	pt := "On my arrival at New York the question was at its height.  The theory of the floating island, and the unapproachable sandbank, supported by minds little competent to form a judgment, was abandoned.  And, indeed, unless this shoal had a machine in its stomach, how could it change its position with such astonishing rapidity?"
 
