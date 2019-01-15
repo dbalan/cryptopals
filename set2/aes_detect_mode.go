@@ -4,22 +4,22 @@ import (
 	"github.com/dbalan/cryptopals/common"
 )
 
-func DetectAESMode(oracle func([]byte) ([]byte, error)) common.AESMode {
+func DetectAESMode(oracle func([]byte) ([]byte, common.AESMode, error)) (common.AESMode, common.AESMode) {
 	// look for repeat data?
 	plainText := []byte{}
 	for i := 0; i < 16*3; i++ {
 		plainText = append(plainText, byte('a'))
 	}
 
-	enc, err := oracle(plainText)
+	enc, actual, err := oracle(plainText)
 	if err != nil {
 		panic("err")
 	}
 
 	if findRepeations(enc) {
-		return common.ECB
+		return common.ECB, actual
 	}
-	return common.CBC
+	return common.CBC, actual
 }
 
 // IN ECB MODE - middle blocks would be same

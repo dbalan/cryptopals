@@ -1,20 +1,13 @@
 package set2
 
 import (
-	"fmt"
-	"github.com/dbalan/cryptopals/common"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestAESModeDetect(t *testing.T) {
-	oracle := EncOracle
-
 	for i := 0; i < 10; i++ {
-		switch DetectAESMode(oracle) {
-		case common.CBC:
-			fmt.Println("CBC")
-		case common.ECB:
-			fmt.Println("ECB")
-		}
+		detected, actual := DetectAESMode(EncOracle)
+		assert.Equal(t, detected, actual)
 	}
 }

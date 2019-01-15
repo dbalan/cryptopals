@@ -46,5 +46,5 @@ func TestCh10(t *testing.T) {
 
 	dec, err := DecAES128CBC(decoded, iv, []byte(key))
 	assert.Nil(t, err)
-	fmt.Println(string(dec))
+	fmt.Println("decrypted (partial): ", string(dec[0:10]))
 }
