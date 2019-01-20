@@ -17,6 +17,27 @@ func PKCS7Padding(data []byte, lenExp int) ([]byte, error) {
 	return data, nil
 }
 
+// assume the data is padded
+func validateStripPKCS7Padding(data []byte) ([]byte, error) {
+	length := len(data)
+	pad := data[length-1]
+
+	// find sufixes with same pad
+	sfxLen := 0
+	for i := length; i > 0; i-- {
+		if data[i-1] != pad {
+			break
+		}
+		sfxLen++
+	}
+
+	if sfxLen != int(pad) {
+		return nil, errors.New("WRONG_PAD_LENGTH")
+	}
+
+	return data[0 : length-sfxLen], nil
+}
+
 func PKCS7StripPadding(data []byte) []byte {
 	dlen := len(data)
 	last := data[dlen-1]

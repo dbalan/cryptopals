@@ -24,3 +24,23 @@ func TestPKCS7StripPadding(t *testing.T) {
 	assert.Equal(t, data, unpadded)
 
 }
+
+func TestValidateStripPKCS7Padding(t *testing.T) {
+	inp := []byte("ICE ICE BABY")
+	errCases := [][]byte{
+		append(inp, byte(5), byte(5), byte(5)),
+		append(inp, byte(1), byte(2), byte(3), byte(4)),
+	}
+
+	for _, cs := range errCases {
+		_, err := validateStripPKCS7Padding(cs)
+		assert.NotNil(t, err)
+	}
+
+	padded, err := PKCS7Padding(inp, 20)
+	assert.Nil(t, err)
+	out, err := validateStripPKCS7Padding(padded)
+	assert.Nil(t, err)
+	assert.Equal(t, inp, out)
+
+}
