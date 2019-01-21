@@ -27,6 +27,9 @@ func TestFindPfxLen(t *testing.T) {
 }
 
 func TestDecrypt2(t *testing.T) {
+	if testing.Short() {
+		t.Skip("too long")
+	}
 	// random prefix
 	count, err := rand.Int(rand.Reader, big.NewInt(10))
 	assert.Nil(t, err)
