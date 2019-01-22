@@ -58,5 +58,5 @@ func DecAES128CBC(ct []byte, iv []byte, key []byte) ([]byte, error) {
 		prevCT = tmpBlk
 	}
 
-	return PKCS7StripPadding(ct), nil
+	return validateStripPKCS7Padding(ct)
 }
