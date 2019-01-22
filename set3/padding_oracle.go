@@ -34,7 +34,7 @@ func encryptOracle(pt, key []byte) (ct, iv []byte) {
 		panic(err)
 	}
 
-	ct, iv, err = set2.EncAES128CBC(pt, iv, key)
+	ct, err = set2.EncAES128CBC(pt, iv, key)
 	if err != nil {
 		panic(err)
 	}
