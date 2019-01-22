@@ -34,7 +34,8 @@ func TestIsAdmin(t *testing.T) {
 }
 
 func TestFliping(t *testing.T) {
-	key := []byte("YELLOW SUBMARINE")
+	key, err := randBytes(16)
+	assert.Nil(t, err)
 	// pad data, see if flipping works
 	in := "?admin?true"
 	data := []byte("comment1=cooking%20MCs;userdata=" + in + ";comment2=%20like%20a%20pound%20of%20bacon")
