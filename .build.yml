@@ -1,6 +1,5 @@
 image: freebsd
 packages:
-  - git
   - go
 sources:
   - https://github.com/dbalan/cryptopals
@@ -10,6 +9,7 @@ tasks:
      mv cryptopals go/src/github.com/dbalan/
      cd go/src/github.com/dbalan/cryptopals/
      go get -v ./...
+     go get -v -t ./...
      go test -v ./...
 
 
