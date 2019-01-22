@@ -6,8 +6,9 @@ Solutions to [cryptopals](https://cryptopals.com) challenges in [Go](https://gol
 Solutions are implemented as a testcases.
 
 ```bash
+cd cryptopals
 for set in "set1" "set2" "set3"; do
- go test -v
+cd $set && go test -v && cd ..
 done
 ```
 
