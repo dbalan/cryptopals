@@ -1,5 +1,8 @@
 # Cryptopals solutions
 
+[![builds.sr.ht status](https://builds.sr.ht/~dbalan/cryptopals.svg)](https://builds.sr.ht/~dbalan/cryptopals?)
+
+
 Solutions to [cryptopals](https://cryptopals.com) challenges in [Go](https://golang.org).
 
 ## Running
