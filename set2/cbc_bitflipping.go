@@ -30,6 +30,13 @@ func cbcOracle(in string, key []byte) []byte {
 	return enc
 }
 
+func flippedBit(ct, from, to byte) byte {
+	// intermediatebit ^ ct = from
+	intermed := from ^ ct
+	// intermed ^ to = newbit
+	return intermed ^ to
+}
+
 func decryptOracle(ct []byte, key []byte) bool {
 	iv := []byte{}
 	for i := 0; i < 16; i++ {
