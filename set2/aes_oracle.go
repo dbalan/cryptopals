@@ -6,16 +6,10 @@ import (
 	"math/big"
 )
 
-func randBytes(size int) ([]byte, error) {
-	buf := make([]byte, size)
-	_, err := rand.Read(buf)
-	return buf, err
-}
-
 func EncOracle(pt []byte) ([]byte, common.AESMode, error) {
 	// key
 	blockSize := 16
-	key, err := randBytes(blockSize)
+	key, err := common.RandBytes(blockSize)
 	if err != nil {
 		return nil, -1, err
 	}
@@ -27,7 +21,7 @@ func EncOracle(pt []byte) ([]byte, common.AESMode, error) {
 	}
 	pl := padLen.Int64() + 5
 
-	pad, err := randBytes(int(pl))
+	pad, err := common.RandBytes(int(pl))
 	if err != nil {
 		return nil, -1, err
 	}
@@ -46,7 +40,7 @@ func EncOracle(pt []byte) ([]byte, common.AESMode, error) {
 		return enc, common.ECB, err
 	}
 
-	iv, err := randBytes(blockSize)
+	iv, err := common.RandBytes(blockSize)
 	if err != nil {
 		return nil, -1, err
 	}

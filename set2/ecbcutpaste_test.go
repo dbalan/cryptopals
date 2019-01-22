@@ -2,12 +2,13 @@ package set2
 
 import (
 	"fmt"
+	"github.com/dbalan/cryptopals/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestEncryptEmailRole(t *testing.T) {
-	key, err := randBytes(16)
+	key, err := common.RandBytes(16)
 	assert.Nil(t, err)
 
 	oracle := func(e string) []byte {

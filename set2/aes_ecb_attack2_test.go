@@ -3,6 +3,7 @@ package set2
 import (
 	"crypto/rand"
 	"fmt"
+	"github.com/dbalan/cryptopals/common"
 	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
@@ -12,10 +13,10 @@ func TestFindPfxLen(t *testing.T) {
 	// random prefix
 	count, err := rand.Int(rand.Reader, big.NewInt(10))
 	assert.Nil(t, err)
-	prefix, err := randBytes(int(count.Int64()))
+	prefix, err := common.RandBytes(int(count.Int64()))
 	assert.Nil(t, err)
 
-	key, err := randBytes(16)
+	key, err := common.RandBytes(16)
 	assert.Nil(t, err)
 	oracle := func(pt []byte) []byte {
 		return AESECBOracle2(pt, key, prefix)
@@ -33,10 +34,10 @@ func TestDecrypt2(t *testing.T) {
 	// random prefix
 	count, err := rand.Int(rand.Reader, big.NewInt(10))
 	assert.Nil(t, err)
-	prefix, err := randBytes(int(count.Int64()))
+	prefix, err := common.RandBytes(int(count.Int64()))
 	assert.Nil(t, err)
 
-	key, err := randBytes(16)
+	key, err := common.RandBytes(16)
 	assert.Nil(t, err)
 	oracle := func(pt []byte) []byte {
 		return AESECBOracle2(pt, key, prefix)

@@ -2,12 +2,13 @@ package set2
 
 import (
 	"fmt"
+	"github.com/dbalan/cryptopals/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestDetectBlockSize(t *testing.T) {
-	//	key, err := randBytes(16)
+	//	key, err := common.RandBytes(16)
 	//	assert.Nil(t, err)
 	key := []byte("YELLOW SUBMARINE")
 	oracle := func(pt []byte) []byte {
@@ -18,7 +19,7 @@ func TestDetectBlockSize(t *testing.T) {
 
 func TestAES128ECBOracle(t *testing.T) {
 	// for a constant key, check block size changes
-	key, err := randBytes(16)
+	key, err := common.RandBytes(16)
 	assert.Nil(t, err)
 
 	pt := "A"
@@ -46,7 +47,7 @@ func TestDecrypt(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Too Long!")
 	}
-	key, err := randBytes(16)
+	key, err := common.RandBytes(16)
 	assert.Nil(t, err)
 
 	oracle := func(pt []byte) []byte {
