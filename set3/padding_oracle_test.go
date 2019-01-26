@@ -25,13 +25,13 @@ func TestDecrypt(t *testing.T) {
 		iv = append(iv, byte(0))
 	}
 
-	pt := []byte(getString())
-	// []byte(getString())
-	ct := encryptOracle(pt, iv, key)
+	pt := getString()
+	ct := encryptOracle([]byte(pt), iv, key)
 
 	oracle := func(ct, iv []byte) error {
 		return decryptOracle(ct, iv, key)
 	}
 
-	decryptWithPaddingOracle(ct, iv, oracle)
+	gotPT := decryptWithPaddingOracle(ct, iv, oracle)
+	assert.Equal(t, pt, gotPT)
 }

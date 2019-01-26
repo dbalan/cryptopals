@@ -48,18 +48,19 @@ func decryptOracle(ct, iv, key []byte) error {
 	return err
 }
 
-func decryptWithPaddingOracle(ct, iv []byte, oracle func([]byte, []byte) error) {
+func decryptWithPaddingOracle(ct, iv []byte, oracle func([]byte, []byte) error) string {
 	pt := []byte{}
 	// we could do this over 1 round, however, what if the oracle rejects
-	// padding > bs?
-	for numBlocks := int(len(ct) / 16); numBlocks > 1; numBlocks-- {
+	// padding len > bs?
+	// so we strip last block and try to pad the next last block
+	for numBlocks := int(len(ct) / 16); numBlocks > 0; numBlocks-- {
 		p := decryptLastBlock(ct, iv, oracle)
 		pt = append(p, pt...)
 		ct = ct[0 : (numBlocks-1)*16]
 	}
-	p := decryptLastBlock(ct, iv, oracle)
-	pt = append(p, pt...)
-	fmt.Println(strings.TrimSpace(string(pt)))
+	resp := strings.TrimSpace(string(pt))
+	fmt.Printf("DEBUG: %s\n", resp)
+	return resp
 }
 
 func decryptLastBlock(ct, iv []byte, oracle func([]byte, []byte) error) []byte {
@@ -105,7 +106,7 @@ outer:
 			}
 		}
 
-		panic("should not")
+		panic("should not have reached here")
 	}
 
 	return set2.PKCS7StripPadding(ptBlock)
