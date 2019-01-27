@@ -20,11 +20,10 @@ func TestEncryptOracle(t *testing.T) {
 }
 
 func TestDecrypt(t *testing.T) {
-	key := []byte("YELLOW SUBMARINE")
-	iv := []byte{}
-	for i := 0; i < 16; i++ {
-		iv = append(iv, byte(0))
-	}
+	key, err := common.RandBytes(16)
+	assert.Nil(t, err)
+	iv, err := common.RandBytes(16)
+	assert.Nil(t, err)
 
 	pt := getString()
 	decoded := common.DecodeB64([]byte(pt))
