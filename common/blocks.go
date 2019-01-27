@@ -23,3 +23,13 @@ func Blocks(d []byte, bs int) [][]byte {
 	}
 	return resp
 }
+
+func PadTo(cur int, size int) int {
+	// pad to next blocks
+	left := cur % size
+	if left != 0 {
+		return cur + (size - left)
+	}
+
+	return cur
+}
