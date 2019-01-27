@@ -1,11 +1,11 @@
 package set3
 
 import (
-	"fmt"
+	//	"fmt"
 	//	"github.com/dbalan/cryptopals/common"
 	"github.com/dbalan/cryptopals/set2"
 	"math/rand"
-	"strings"
+	//	"strings"
 	"time"
 )
 
@@ -48,7 +48,8 @@ func decryptOracle(ct, iv, key []byte) error {
 	return err
 }
 
-func decryptWithPaddingOracle(ct, iv []byte, oracle func([]byte, []byte) error) string {
+func decryptWithPaddingOracle(ct, iv []byte, oracle func([]byte, []byte) error) []byte {
+	//	fmt.Printf("CT is %d\n", ct)
 	pt := []byte{}
 	// we could do this over 1 round, however, what if the oracle rejects
 	// padding len > bs?
@@ -58,9 +59,9 @@ func decryptWithPaddingOracle(ct, iv []byte, oracle func([]byte, []byte) error) 
 		pt = append(p, pt...)
 		ct = ct[0 : (numBlocks-1)*16]
 	}
-	resp := strings.TrimSpace(string(pt))
-	fmt.Printf("DEBUG: %s\n", resp)
-	return resp
+	//resp := strings.TrimSpace(string(pt))
+	//	fmt.Printf("DEBUG: %s\n", resp)
+	return pt
 }
 
 func decryptLastBlock(ct, iv []byte, oracle func([]byte, []byte) error) []byte {
@@ -83,17 +84,25 @@ outer:
 			xorblk = iv[0:16]
 		} else {
 			// the block that gets xor'd with decrypted output
+			//	fmt.Printf("NOT MESSING WITH IV\n")
 			xorblk = nct[lenct-32 : lenct-16]
 		}
 
 		for i := 0; i < pad-1; i++ {
 			xorblk[15-i] = aesDec[15-i] ^ byte(pad)
 		}
+		//fmt.Printf("Padded with %d %d times\n", pad, pad-1)
 
 		orig := xorblk[16-pad]
 		for b := 0; b <= 0xff; b++ {
-			xorblk[16-pad] = byte(b)
+			// if this is the last bit, we should ignore trying the
+			// original value original value won't raise errors -
+			// but that doesn't mean it has the right padding
+			if curbit == 15 && b == int(orig) {
+				continue
+			}
 
+			xorblk[16-pad] = byte(b)
 			// another copy of ciphertext
 			// oracle messes with the buffer passed to it.
 			nnct := make([]byte, lenct)
@@ -105,7 +114,10 @@ outer:
 				continue outer
 			}
 		}
-
+		//		fmt.Printf("FAILED AT: pad: %d curbit: %d\n", pad, curbit)
+		//		fmt.Printf("     aesDec is: %d\n", aesDec)
+		//		fmt.Printf("     xorblk is: %d\n", xorblk)
+		//		fmt.Printf("     pt is :    %d\n", ptBlock)
 		panic("should not have reached here")
 	}
 

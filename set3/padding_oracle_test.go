@@ -1,6 +1,7 @@
 package set3
 
 import (
+	"fmt"
 	"github.com/dbalan/cryptopals/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -26,12 +27,14 @@ func TestDecrypt(t *testing.T) {
 	}
 
 	pt := getString()
-	ct := encryptOracle([]byte(pt), iv, key)
+	decoded := common.DecodeB64([]byte(pt))
+	ct := encryptOracle(decoded, iv, key)
 
 	oracle := func(ct, iv []byte) error {
 		return decryptOracle(ct, iv, key)
 	}
 
 	gotPT := decryptWithPaddingOracle(ct, iv, oracle)
-	assert.Equal(t, pt, gotPT)
+	fmt.Println(string(gotPT))
+	assert.Equal(t, common.DecodeB64([]byte(pt)), gotPT)
 }
