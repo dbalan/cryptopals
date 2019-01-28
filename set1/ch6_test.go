@@ -51,14 +51,6 @@ func TestCh6(t *testing.T) {
 	key := findKey(decoded, 29)
 	fmt.Println("KEY", key)
 
-	propkey := []int{84, 101, 114, 109, 105, 110, 97, 116, 111, 114, 32, 88, 58, 0, 66, 114, 105, 110, 103, 32, 116, 104, 101, 32, 110, 111, 105, 115, 101}
-	skey := []byte{}
-
-	for _, r := range propkey {
-		skey = append(skey, byte(r))
-	}
-
-	//skey := key
-	decrypted := decryptRepeatXOR(decoded, skey)
+	decrypted := decryptRepeatXOR(decoded, key)
 	fmt.Println("partial: ", string(decrypted))
 }
