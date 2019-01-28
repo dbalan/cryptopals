@@ -14,7 +14,7 @@ func repeatingXOR(plainText string, key string) string {
 }
 
 // FIXME: both functions can be merged
-func decryptRepeatXOR(ct []byte, key []byte) []byte {
+func DecryptRepeatXOR(ct []byte, key []byte) []byte {
 	lkey := len(key)
 	resp := []byte{}
 	for i := 0; i < len(ct); i++ {

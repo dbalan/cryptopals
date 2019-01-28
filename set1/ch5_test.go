@@ -21,6 +21,6 @@ func TestRepId(t *testing.T) {
 	key := "ran"
 
 	ct := repeatingXOR(pt, key)
-	pt2 := decryptRepeatXOR(decodeHexString(ct), []byte(key))
+	pt2 := DecryptRepeatXOR(decodeHexString(ct), []byte(key))
 	assert.Equal(t, []byte(pt), pt2)
 }

@@ -68,7 +68,7 @@ func sliceAndDice(data []byte, keysize int) [][]byte {
 
 }
 
-func findKey(data []byte, keysize int) []byte {
+func FindKey(data []byte, keysize int) []byte {
 	slices := sliceAndDice(data, keysize)
 	key := []byte{}
 	for _, s := range slices {

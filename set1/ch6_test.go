@@ -48,9 +48,9 @@ func TestCh6(t *testing.T) {
 	size := findKeySize(decoded)
 	fmt.Println("KEYSIZE: ", size)
 
-	key := findKey(decoded, 29)
+	key := FindKey(decoded, 29)
 	fmt.Println("KEY", key)
 
-	decrypted := decryptRepeatXOR(decoded, key)
+	decrypted := DecryptRepeatXOR(decoded, key)
 	fmt.Println("partial: ", string(decrypted))
 }
