@@ -73,12 +73,10 @@ func (mt *mt19937) Rand() uint32 {
 	}
 
 	y := mt.state[mt.index]
-
 	y ^= (y >> u)
 	y ^= (y << s) & b
 	y ^= (y << t) & c
 	y ^= (y >> l)
-
 	mt.index += 1
 
 	return y
