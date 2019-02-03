@@ -33,3 +33,12 @@ func PadTo(cur int, size int) int {
 
 	return cur
 }
+
+func Repeat(n int, val byte) []byte {
+	b := []byte{}
+
+	for i := 0; i < n; i++ {
+		b = append(b, val)
+	}
+	return b
+}
