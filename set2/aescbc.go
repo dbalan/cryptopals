@@ -43,7 +43,6 @@ func DecAES128CBC(ct []byte, iv []byte, key []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	prevCT := iv
 	for i := 0; i < len(ct); i += blockSize {
 		curBlk := ct[i : i+blockSize]

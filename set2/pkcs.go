@@ -32,7 +32,7 @@ func validateStripPKCS7Padding(data []byte) ([]byte, error) {
 	}
 
 	if sfxLen != int(pad) {
-		return nil, errors.New("WRONG_PAD_LENGTH")
+		return data, errors.New("WRONG_PAD_LENGTH")
 	}
 
 	return data[0 : length-sfxLen], nil
