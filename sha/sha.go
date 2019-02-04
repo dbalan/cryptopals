@@ -1,8 +1,6 @@
 package sha
 
 import (
-	"fmt"
-
 	"github.com/dbalan/cryptopals/common"
 )
 
@@ -41,7 +39,7 @@ func preprocess(msg []byte) []byte {
 	msgLen := len(msg) * 8
 
 	// append 0x80
-
+	msg = append(msg, byte(0x80))
 	left := 512 - (msgLen+8)%512
 	var padLen int = 0
 
@@ -52,7 +50,9 @@ func preprocess(msg []byte) []byte {
 	}
 
 	msg = append(msg, common.Repeat(padLen/8, byte(0))...)
-	msg = append(msg, BEEncodeUint64(uint64(msgLen))...)
+
+	encodedLen := BEEncodeUint64(uint64(msgLen))
+	msg = append(msg, encodedLen...)
 	return msg
 }
 
@@ -68,11 +68,9 @@ func packUint32(w ...byte) uint32 {
 
 func chunkEncode(ch []byte, h0, h1, h2, h3, h4 uint32) (p, q, r, s, t uint32) {
 	words := make([]uint32, 80)
-	fmt.Printf("chunks: % x\n", ch)
 	groups := common.Blocks(ch, 4)
 	for wi, w := range groups {
 		words[wi] = packUint32(w...)
-		fmt.Println("W[I]: ", words[wi])
 	}
 
 	// expand
@@ -111,10 +109,7 @@ func chunkEncode(ch []byte, h0, h1, h2, h3, h4 uint32) (p, q, r, s, t uint32) {
 		c = rotateL(b, 30)
 		b = a
 		a = temp
-		if i == 0 {
-			fmt.Println("FVAL: ", f, k)
-			fmt.Printf("round values: %d %d %d %d %d\n", a, b, c, d, e)
-		}
+
 	}
 
 	p = h0 + a
@@ -122,15 +117,16 @@ func chunkEncode(ch []byte, h0, h1, h2, h3, h4 uint32) (p, q, r, s, t uint32) {
 	r = h2 + c
 	s = h3 + d
 	t = h4 + e
-	fmt.Printf("h values: %d %d %d %d %d\n", p, q, r, s, t)
 	return
 }
 
 func SHA(msg []byte) []byte {
 	// msg is 8 bits
 	prep := preprocess(msg)
-
-	chs := common.Blocks(prep, 64)
+	chs := [][]byte{}
+	for i := 0; i < len(prep); i += 64 {
+		chs = append(chs, prep[i:i+64])
+	}
 
 	var th0 uint32 = h0
 	var th1 uint32 = h1
@@ -139,16 +135,15 @@ func SHA(msg []byte) []byte {
 	var th4 uint32 = h4
 
 	for _, ch := range chs {
-
 		th0, th1, th2, th3, th4 = chunkEncode(ch, th0, th1, th2, th3, th4)
 	}
 
 	resp := []byte{}
-	resp = append(resp, BEEncodeUint32(th4)...)
-	resp = append(resp, BEEncodeUint32(th3)...)
-	resp = append(resp, BEEncodeUint32(th2)...)
-	resp = append(resp, BEEncodeUint32(th1)...)
 	resp = append(resp, BEEncodeUint32(th0)...)
+	resp = append(resp, BEEncodeUint32(th1)...)
+	resp = append(resp, BEEncodeUint32(th2)...)
+	resp = append(resp, BEEncodeUint32(th3)...)
+	resp = append(resp, BEEncodeUint32(th4)...)
 
 	return resp
 }

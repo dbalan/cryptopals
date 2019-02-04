@@ -20,15 +20,23 @@ func TestBEEncode(t *testing.T) {
 	assert.Equal(t, expected, outp)
 }
 
-func TestSHA(t *testing.T) {
-	input := "The quick brown fox jumps over the lazy dog"
-	expected := common.DecodeB64([]byte("L9ThxnotKPzthJ7hu3bnORuT6xI="))
-
-	assert.Equal(t, expected, SHA([]byte(input)))
-}
-
 func TestPackUint32(t *testing.T) {
 	resp := packUint32([]byte{byte(0x54), byte(0x68), byte(0x65), byte(0x20)}...)
 
 	assert.Equal(t, uint32(1416127776), resp)
+}
+
+func TestSHA(t *testing.T) {
+	testCases := []struct {
+		In  string
+		Out string
+	}{
+		{"The quick brown fox jumps over the lazy dog", "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"},
+		{"The quick brown fox jumps over the lazy cog", "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3"},
+		{"", "da39a3ee5e6b4b0d3255bfef95601890afd80709"},
+	}
+	for _, tc := range testCases {
+		result := SHA([]byte(tc.In))
+		assert.Equal(t, tc.Out, common.EncodeHexString(result))
+	}
 }
