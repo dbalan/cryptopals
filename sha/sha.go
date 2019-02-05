@@ -35,7 +35,7 @@ func rotateL(x uint32, n uint32) uint32 {
 	return (x << n) | (x >> (32 - n))
 }
 
-func preprocess(msg []byte) []byte {
+func Preprocess(msg []byte) []byte {
 	msgLen := len(msg) * 8
 
 	// append 0x80
@@ -56,21 +56,11 @@ func preprocess(msg []byte) []byte {
 	return msg
 }
 
-func packUint32(w ...byte) uint32 {
-	l := len(w)
-
-	var acc uint32
-	for i := 0; i < l; i++ {
-		acc = acc | uint32(w[l-i-1])<<uint(i*8)
-	}
-	return acc
-}
-
 func chunkEncode(ch []byte, h0, h1, h2, h3, h4 uint32) (p, q, r, s, t uint32) {
 	words := make([]uint32, 80)
 	groups := common.Blocks(ch, 4)
 	for wi, w := range groups {
-		words[wi] = packUint32(w...)
+		words[wi] = common.PackUint32(w...)
 	}
 
 	// expand
@@ -122,28 +112,26 @@ func chunkEncode(ch []byte, h0, h1, h2, h3, h4 uint32) (p, q, r, s, t uint32) {
 
 func SHA(msg []byte) []byte {
 	// msg is 8 bits
-	prep := preprocess(msg)
+	prep := Preprocess(msg)
+
+	return PartialSHA(prep, h0, h1, h2, h3, h4)
+}
+
+func PartialSHA(prep []byte, a, b, c, d, e uint32) []byte {
 	chs := [][]byte{}
 	for i := 0; i < len(prep); i += 64 {
 		chs = append(chs, prep[i:i+64])
 	}
 
-	var th0 uint32 = h0
-	var th1 uint32 = h1
-	var th2 uint32 = h2
-	var th3 uint32 = h3
-	var th4 uint32 = h4
-
 	for _, ch := range chs {
-		th0, th1, th2, th3, th4 = chunkEncode(ch, th0, th1, th2, th3, th4)
+		a, b, c, d, e = chunkEncode(ch, a, b, c, d, e)
 	}
 
 	resp := []byte{}
-	resp = append(resp, BEEncodeUint32(th0)...)
-	resp = append(resp, BEEncodeUint32(th1)...)
-	resp = append(resp, BEEncodeUint32(th2)...)
-	resp = append(resp, BEEncodeUint32(th3)...)
-	resp = append(resp, BEEncodeUint32(th4)...)
-
+	resp = append(resp, BEEncodeUint32(a)...)
+	resp = append(resp, BEEncodeUint32(b)...)
+	resp = append(resp, BEEncodeUint32(c)...)
+	resp = append(resp, BEEncodeUint32(d)...)
+	resp = append(resp, BEEncodeUint32(e)...)
 	return resp
 }

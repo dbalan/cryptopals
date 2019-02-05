@@ -9,7 +9,7 @@ import (
 func TestPreprocessing(t *testing.T) {
 	input := []byte("The quick brown fox jumps over the lazy dog")
 
-	out := preprocess(input)
+	out := Preprocess(input)
 	assert.Equal(t, 0, (len(out)*8)%512)
 }
 
@@ -18,12 +18,6 @@ func TestBEEncode(t *testing.T) {
 	expected := []byte{byte(0), byte(0), byte(0), byte(0), byte(222), byte(173), byte(190), byte(239)}
 
 	assert.Equal(t, expected, outp)
-}
-
-func TestPackUint32(t *testing.T) {
-	resp := packUint32([]byte{byte(0x54), byte(0x68), byte(0x65), byte(0x20)}...)
-
-	assert.Equal(t, uint32(1416127776), resp)
 }
 
 func TestSHA(t *testing.T) {
