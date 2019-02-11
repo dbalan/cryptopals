@@ -3,7 +3,6 @@ package set5
 import (
 	"math"
 	"math/rand"
-	"time"
 )
 
 /* p = 37, g = 5
@@ -28,7 +27,6 @@ const (
 )
 
 func simpleDHCheck() {
-	rand.Seed(time.Now().UnixNano())
 	p := 37
 	g := 5
 
