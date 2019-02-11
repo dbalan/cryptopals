@@ -1,9 +1,11 @@
 package sha
 
 import (
+	//	"fmt"
 	"github.com/dbalan/cryptopals/common"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestPreprocessing(t *testing.T) {
@@ -32,5 +34,48 @@ func TestSHA(t *testing.T) {
 	for _, tc := range testCases {
 		result := SHA([]byte(tc.In))
 		assert.Equal(t, tc.Out, common.EncodeHexString(result))
+	}
+}
+
+var res []byte
+
+func BenchmarkSHA1(b *testing.B) {
+	var r []byte
+	for i := 0; i < b.N; i++ {
+		r = SHA([]byte("what"))
+	}
+	res = r
+}
+
+func BenchmarkSHA1RunningTime(b *testing.B) {
+	var r []byte
+	var ts []time.Duration
+
+	for i := 0; i < b.N; i++ {
+		start := time.Now()
+		r = SHA([]byte("hello world"))
+		extm := time.Since(start)
+		ts = append(ts, extm)
+	}
+	res = r
+
+	common.StandardDeviation(ts)
+}
+
+func TestSHA1RunningTime(t *testing.T) {
+	var r []byte
+	var ts []time.Duration
+
+	for p := 0; p < 10; p++ {
+		for i := 0; i < 1000; i++ {
+			start := time.Now()
+			r = SHA([]byte("hello worldqweqyuuqywequw"))
+			//		time.Sleep(1 * time.Millisecond)
+			extm := time.Since(start)
+			ts = append(ts, extm)
+		}
+		res = r
+
+		common.StandardDeviation(ts)
 	}
 }
