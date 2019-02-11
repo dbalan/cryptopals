@@ -1,12 +1,12 @@
 package common
 
 func hexPrettyPrint(b byte) string {
-	left := encodeHex(b >> 4 & 0xF)
-	right := encodeHex(b & 0xF)
+	left := EncodeHex(b >> 4 & 0xF)
+	right := EncodeHex(b & 0xF)
 	return string(left) + string(right)
 }
 
-func encodeHex(n byte) byte {
+func EncodeHex(n byte) byte {
 	switch {
 	case int(n) >= 0 && int(n) <= 9:
 		return n + '0'
