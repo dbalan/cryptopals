@@ -60,3 +60,14 @@ done
 1. Break an MD4 keyed MAC using length extension: TODO (MD construction similar to sha1)
 1. Implement and break HMAC-SHA1 with an artificial timing leak: TODO
 1. Break HMAC-SHA1 with a slightly less artificial timing leak: TODO
+
+### Set 5
+
+1. Implement Diffie-Hellman: https://github.com/dbalan/cryptopals/blob/master/set5/dh.go
+1. Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection: https://github.com/dbalan/cryptopals/blob/master/set5/dh_mitm_test.go
+1. Implement DH with negotiated groups, and break with malicious "g" parameters
+1. Implement Secure Remote Password (SRP)
+1. Break SRP with a zero key
+1. Offline dictionary attack on simplified SRP
+1. Implement RSA
+1. Implement an E=3 RSA Broadcast attack

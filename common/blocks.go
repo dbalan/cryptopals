@@ -14,6 +14,12 @@ func EqualBlocks(a, b []byte) bool {
 	return true
 }
 
+func CopyBlock(b []byte) []byte {
+	c := make([]byte, len(b))
+	copy(c, b)
+	return c
+}
+
 // a is of lenth n * bs where n is a real number
 // split into a blocks
 func Blocks(d []byte, bs int) [][]byte {

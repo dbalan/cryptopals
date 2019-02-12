@@ -5,5 +5,11 @@ import (
 )
 
 func TestTestNormalComm(t *testing.T) {
-	normComm()
+	normalRecv := newB()
+	communicate(normalRecv)
+}
+
+func TestMITM(t *testing.T) {
+	mal := newM()
+	communicate(mal)
 }
