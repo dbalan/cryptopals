@@ -57,3 +57,51 @@ func simpleDHCheck() {
 		panic("Session keys don't match")
 	}
 }
+
+func primes() (p, g *big.Int) {
+	p = &big.Int{}
+	g = &big.Int{}
+	if _, ok := p.SetString(strP, 16); !ok {
+		panic("error: noparse.strP")
+	}
+
+	if _, ok := g.SetString(strG, 16); !ok {
+		panic("error: noparse.strG")
+	}
+	return
+}
+
+func keypair(p, g *big.Int) (pub, priv *big.Int) {
+	priv = big.NewInt(rand.Int63())
+	priv.Mod(priv, p)
+
+	pub = &big.Int{}
+	pub.Exp(g, priv, p)
+	return pub, priv
+}
+
+func sessionKey(pubTheir, privMine, p *big.Int) *big.Int {
+	skey := &big.Int{}
+	skey.Exp(pubTheir, privMine, p)
+	return skey
+}
+
+func NISTDHCheck() {
+	p, g := primes()
+
+	// personA
+	A, a := keypair(p, g)
+	// personB
+	B, b := keypair(p, g)
+
+	// transfer
+	// personA
+	skeyA := sessionKey(B, a, p)
+
+	// personB
+	skeyB := sessionKey(A, b, p)
+
+	if skeyA.Cmp(skeyB) != 0 {
+		panic("session keys don't match")
+	}
+}

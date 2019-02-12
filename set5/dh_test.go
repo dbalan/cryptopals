@@ -15,10 +15,29 @@ func TestSimpleDH(t *testing.T) {
 	wg := sync.WaitGroup{}
 
 	for i := 0; i < 10; i++ {
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 			simpleDHCheck()
+		}()
+	}
+	wg.Wait()
+}
+
+func TestPrimes(t *testing.T) {
+	p, g := primes()
+	assert.Equal(t, strP, p.Text(16))
+	assert.Equal(t, strG, g.Text(16))
+}
+
+func TestNISTDHCheck(t *testing.T) {
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			NISTDHCheck()
 		}()
 	}
 	wg.Wait()
