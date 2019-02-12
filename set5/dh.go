@@ -1,8 +1,9 @@
 package set5
 
 import (
-	"math"
+	"math/big"
 	"math/rand"
+	"time"
 )
 
 /* p = 37, g = 5
@@ -26,18 +27,31 @@ const (
 	strG = "2"
 )
 
+func smModExp(a, b, p int64) int64 {
+	// wrap them in big int since they might actually overflow!
+	bigA := big.NewInt(a)
+	bigB := big.NewInt(b)
+	bigP := big.NewInt(p)
+	bigA.Exp(bigA, bigB, bigP)
+	return bigA.Int64()
+}
+
 func simpleDHCheck() {
-	p := 37
-	g := 5
+	rand.Seed(time.Now().UnixNano())
+	var p int64 = 37
+	var g int64 = 5
 
-	a := rand.Int() % p
-	b := rand.Int() % p
+	ra := rand.Int63()
+	rb := rand.Int63()
 
-	A := int(math.Pow(float64(g), float64(a))) % p
-	B := int(math.Pow(float64(g), float64(b))) % p
+	a := ra % p
+	b := rb % p
 
-	sA := int(math.Pow(float64(B), float64(a))) % p
-	sB := int(math.Pow(float64(A), float64(a))) % p
+	A := smModExp(g, a, p)
+	B := smModExp(g, b, p)
+
+	sA := smModExp(B, a, p)
+	sB := smModExp(A, b, p)
 
 	if sA != sB {
 		panic("Session keys don't match")
