@@ -1,7 +1,6 @@
 package set5
 
 import (
-	"fmt"
 	"github.com/dbalan/cryptopals/common"
 	"github.com/dbalan/cryptopals/set2"
 	"github.com/dbalan/cryptopals/sha"
@@ -89,7 +88,6 @@ func communicate(recv Recv) {
 	pub, priv := keypair(p, g)
 	pubtheir := recv.Kex(pub)
 	skey := sessionKey(pubtheir, priv, p)
-
 	ct, iv := encryptWithSK(skey, msg)
 	nct, niv := recv.Exchange(ct, iv)
 	rmsg := decryptWithSK(skey, nct, niv)
