@@ -9,6 +9,7 @@ import (
 )
 
 type Recv interface {
+	PrimeEx(p, g *big.Int)
 	Kex(pub *big.Int) *big.Int
 	Exchange(ct, iv []byte) (msg, niv []byte)
 }
@@ -18,9 +19,15 @@ type PersonB struct {
 }
 
 func newB() *PersonB {
-	p, g := primes()
+	return &PersonB{}
+}
+
+func (b *PersonB) PrimeEx(p, g *big.Int) {
+	b.p = p
+	b.g = g
 	pub, priv := keypair(p, g)
-	return &PersonB{p: p, g: g, pub: pub, priv: priv}
+	b.pub = pub
+	b.priv = priv
 }
 
 func (b *PersonB) Kex(pub *big.Int) *big.Int {
@@ -48,8 +55,13 @@ type MitmM struct {
 
 func newM() *MitmM {
 	B := newB()
-	p, g := primes()
-	return &MitmM{B: B, p: p, g: g}
+	return &MitmM{B: B}
+}
+
+func (m *MitmM) PrimeEx(p, g *big.Int) {
+	m.B.PrimeEx(p, g)
+	m.p = p
+	m.g = g
 }
 
 func (m *MitmM) Kex(pub *big.Int) *big.Int {
@@ -107,6 +119,8 @@ func communicate(recv Recv) {
 	// personA
 	msg := []byte("hello world")
 	p, g := primes()
+	recv.PrimeEx(p, g)
+
 	pub, priv := keypair(p, g)
 	pubtheir := recv.Kex(pub)
 	skey := sessionKey(pubtheir, priv, p)
