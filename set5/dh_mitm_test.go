@@ -9,7 +9,7 @@ func TestTestNormalComm(t *testing.T) {
 	communicate(normalRecv)
 }
 
-func TestMITM(t *testing.T) {
-	mal := newM()
+func TestKey0MITM(t *testing.T) {
+	mal := newK0Mitm()
 	communicate(mal)
 }

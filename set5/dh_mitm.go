@@ -48,41 +48,6 @@ func (b *PersonB) Skey() *big.Int {
 	return b.skey
 }
 
-type MitmM struct {
-	B                *PersonB
-	p, g, pubA, pubB *big.Int
-}
-
-func newM() *MitmM {
-	B := newB()
-	return &MitmM{B: B}
-}
-
-func (m *MitmM) PrimeEx(p, g *big.Int) {
-	m.B.PrimeEx(p, g)
-	m.p = p
-	m.g = g
-}
-
-func (m *MitmM) Kex(pub *big.Int) *big.Int {
-	m.pubA = pub
-	// send B bogus
-	pubB := m.B.Kex(m.p)
-	m.pubB = pubB
-
-	// send A bogus
-	return m.p
-}
-
-func (m *MitmM) Exchange(ct, iv []byte) ([]byte, []byte) {
-	mct := common.CopyBlock(ct)
-	miv := common.CopyBlock(iv)
-	msg := decryptWithSK(big.NewInt(0), mct, miv)
-	fmt.Println("MITM: ", string(msg))
-	nct, niv := m.B.Exchange(ct, iv)
-	return nct, niv
-}
-
 func getKeySK(skey *big.Int) []byte {
 	keybytes := []byte(skey.Text(16))
 	key := []byte(common.EncodeHexString(sha.SHA(keybytes))[0:16])
