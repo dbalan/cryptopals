@@ -1,4 +1,5 @@
 // this is the SRP server implimentation, set5, ch 36
+// see http://srp.stanford.edu/design.html
 package main
 
 import (
@@ -18,7 +19,7 @@ var (
 )
 
 type Server struct {
-	u, v *big.Int
+	v    *big.Int
 	salt uint64
 	I    string
 	A, B *big.Int
@@ -46,6 +47,7 @@ func (s *Server) ExchangePub(I string, A *big.Int) (salt uint64, B *big.Int) {
 		panic("username doesn't match")
 	}
 
+	// generate session key and send pubkey
 	b := rand.Uint64()
 	s.b = b
 	s.A = A
@@ -58,61 +60,73 @@ func (s *Server) ExchangePub(I string, A *big.Int) (salt uint64, B *big.Int) {
 	s.B = B
 
 	// compute u and store it
-	u := SHA256Int(A, B)
-	s.u = u
 	return s.salt, B
 }
 
-func (s *Server) CalculateKey() {
+func (s *Server) CheckAuth(cauth string) bool {
 	//	S = (A * v**u) ** b % N
+	u := SHA256Int(s.A, s.B)
 	S := &big.Int{}
-	S.Exp(s.v, s.u, N)
+	S.Exp(s.v, u, N)
 	S.Mul(S, s.A)
 	S.Exp(S, big.NewInt(int64(s.b)), N)
-	KEY := SHA256Int(S)
 
+	key := SHA256Int(S)
+	actual := HMAC_SHA256(key.Text(16), s.salt)
+
+	if cauth == actual {
+		return true
+	}
+	return false
 }
 
-type Client struct{}
+func login(password string) {
+	// connect to server
+	server := NewServer()
 
-// FIXME: move to interactive
-func communication() {
-	// don't really care here.
-	I := username
+	// get a random key
+	a := &big.Int{}
+	a.SetUint64(rand.Uint64())
 
-	svr := NewServer()
-	// send I, A=g**a % N
-	a := rand.Uint64()
+	// generate pubKey
 	A := &big.Int{}
+	A.Exp(g, a, N)
 
-	A.Exp(g, big.NewInt(int64(a)), N)
-	fmt.Println("ExchangePub keys")
-	salt, B := svr.ExchangePub(I, A)
-	fmt.Println("Computing keys")
+	// exchange keys with server
+	salt, B := server.ExchangePub(username, A)
 
+	// shared secret (ish)
 	u := SHA256Int(A, B)
 
-	password := "5upers4cr4t"
-	x := saltHmac(salt, password)
-	S := &big.Int{}
+	// encode password
+	pwhs := saltHmac(salt, password)
+
+	// Session
 	// S = (B - k * g**x)**(a + u * x) % N
 	P2 := big.NewInt(0)
-	P2.Mul(u, x)
-	P2.Add(P2, big.NewInt(int64(a)))
-
-	S.Exp(g, x, N)
+	P2.Mul(u, pwhs)
+	P2.Add(P2, a)
+	// S = (B - k * g**x)**P2 % N
+	S := &big.Int{}
+	S.Exp(g, pwhs, N)
 	S.Mul(S, k)
 	S.Sub(B, S)
 	S.Exp(S, P2, N)
 
-	KEY := SHA256Int(S)
-	fmt.Println(KEY.Text(16))
-	svr.CalculateKey()
+	key := SHA256Int(S)
+	cauth := HMAC_SHA256(key.Text(16), salt)
+
+	if !server.CheckAuth(cauth) {
+		fmt.Println("failed auth: ", password)
+	} else {
+		fmt.Println("auth worked: ", password)
+	}
 }
 
 func main() {
 	p, _ := set5.GetNistPrimes()
 	N = p
 
-	communication()
+	// fails
+	login("supersecret")
 }

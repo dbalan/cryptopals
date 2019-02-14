@@ -37,3 +37,10 @@ func SHA256Int(A ...*big.Int) *big.Int {
 	ret.SetString(sum, 16)
 	return ret
 }
+
+func HMAC_SHA256(key string, salt uint64) string {
+	h := sha256.New()
+	h.Write([]byte(fmt.Sprintf("%x", salt)))
+	h.Write([]byte(key))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
