@@ -115,3 +115,21 @@ func login(password string) bool {
 
 	return server.CheckAuth(cauth)
 }
+
+func loginWithZero() bool {
+	// agree on N
+	N, _ = primes()
+	// connect to server
+	server := NewServer()
+
+	A := big.NewInt(0)
+
+	// exchange keys with server
+	salt, _ := server.ExchangePub(username, A)
+	S := big.NewInt(0)
+
+	key := SHA256Int(S)
+	cauth := HMAC_SHA256(key.Text(16), salt)
+
+	return server.CheckAuth(cauth)
+}
