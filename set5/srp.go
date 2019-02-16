@@ -1,13 +1,10 @@
 // this is the SRP server implimentation, set5, ch 36
 // see http://srp.stanford.edu/design.html
-package main
+package set5
 
 import (
 	"math/big"
 	"math/rand"
-
-	"fmt"
-	"github.com/dbalan/cryptopals/set5"
 )
 
 const username = "user@email.com"
@@ -33,12 +30,10 @@ func NewServer() *Server {
 	x := saltHmac(salt, password)
 
 	svr.salt = salt
-
 	// generate v and store it
 	v := &big.Int{}
 	v.Exp(g, x, N)
 	svr.v = v
-
 	return svr
 }
 
@@ -80,7 +75,9 @@ func (s *Server) CheckAuth(cauth string) bool {
 	return false
 }
 
-func login(password string) {
+func login(password string) bool {
+	// agree on N
+	N, _ = primes()
 	// connect to server
 	server := NewServer()
 
@@ -116,17 +113,5 @@ func login(password string) {
 	key := SHA256Int(S)
 	cauth := HMAC_SHA256(key.Text(16), salt)
 
-	if !server.CheckAuth(cauth) {
-		fmt.Println("failed auth: ", password)
-	} else {
-		fmt.Println("auth worked: ", password)
-	}
-}
-
-func main() {
-	p, _ := set5.GetNistPrimes()
-	N = p
-
-	// fails
-	login("supersecret")
+	return server.CheckAuth(cauth)
 }
