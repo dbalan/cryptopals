@@ -13,3 +13,7 @@ func TestRegularLogin(t *testing.T) {
 func TestLoginZero(t *testing.T) {
 	assert.Equal(t, true, loginWithZero())
 }
+
+func TestLoginWithN(t *testing.T) {
+	assert.Equal(t, true, loginWithN())
+}

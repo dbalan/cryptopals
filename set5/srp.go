@@ -16,11 +16,10 @@ var (
 )
 
 type Server struct {
-	v    *big.Int
+	v, b *big.Int
 	salt uint64
 	I    string
 	A, B *big.Int
-	b    uint64
 }
 
 func NewServer() *Server {
@@ -43,14 +42,14 @@ func (s *Server) ExchangePub(I string, A *big.Int) (salt uint64, B *big.Int) {
 	}
 
 	// generate session key and send pubkey
-	b := rand.Uint64()
-	s.b = b
+	s.b = &big.Int{}
+	s.b.SetUint64(rand.Uint64())
 	s.A = A
 	B = &big.Int{}
 
 	B1 := &big.Int{}
 	B1.Mul(k, s.v)
-	B.Exp(g, big.NewInt(int64(b)), N)
+	B.Exp(g, s.b, N)
 	B.Add(B, B1)
 	s.B = B
 
@@ -64,7 +63,7 @@ func (s *Server) CheckAuth(cauth string) bool {
 	S := &big.Int{}
 	S.Exp(s.v, u, N)
 	S.Mul(S, s.A)
-	S.Exp(S, big.NewInt(int64(s.b)), N)
+	S.Exp(S, s.b, N)
 
 	key := SHA256Int(S)
 	actual := HMAC_SHA256(key.Text(16), s.salt)
@@ -131,5 +130,20 @@ func loginWithZero() bool {
 	key := SHA256Int(S)
 	cauth := HMAC_SHA256(key.Text(16), salt)
 
+	return server.CheckAuth(cauth)
+}
+
+func loginWithN() bool {
+	N, _ = primes()
+
+	server := NewServer()
+	// try multiples of N
+	mul := big.NewInt(rand.Int63n(10))
+	mul.Abs(mul)
+	mul.Exp(N, mul, nil)
+	salt, _ := server.ExchangePub(username, mul)
+	S := big.NewInt(0)
+	key := SHA256Int(S)
+	cauth := HMAC_SHA256(key.Text(16), salt)
 	return server.CheckAuth(cauth)
 }
