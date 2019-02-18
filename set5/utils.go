@@ -5,11 +5,18 @@ import (
 	"fmt"
 	"math/big"
 	"math/rand"
+	"strings"
 )
+
+func passwords() []string {
+	// q n' d way to get password dict
+	txt := "a abruptly absence account acute after again all amounts an and anderson animal annually anxiety any are arousing assess at backward be because been being believe below boilers breach bureau but by by called cape captain casualty cause centimeters charged choice cleaner clear company compartment consequently considerable considerable contain continue could couldn’t damage days delay derelict didn’t discovered dived dock docks done down dry engineers entered established extinguished eyes fifth figure filled for formed fortunately four from furnaces gaped gash had half halt hands have he his hold hole immediate immediately in indeed inexplicable inspect insurance into invaded invasion iron iron isosceles it it its itself job last launched lay leak least liverpool located losses lost made marine maritime meters miles moment moments monster’s motion must needed news no not numbers of on on one or out outrageous over paddle passions patched perfectly perforating piercing power proceeded prodigious produced proved public punch put recorded responsibility resulted sailing sailors scotia scotia sea shape sheet ships shoulder since so speed steam steamer’s straw such supposedly swamped symmetrical that the the their then there they they this this those three to tool toughness—plus triangle truly two two uncommon underside unfortunately vessels voyage was waterline way wheels which whose width with withdraw within without would"
+	return strings.Split(txt, " ")
+}
 
 func randPasswd() string {
 	n := rand.Uint32()
-	pass := []string{"hello", "world", "of", "simple", "passwords"}
+	pass := passwords()
 	return pass[int(n)%len(pass)]
 }
 

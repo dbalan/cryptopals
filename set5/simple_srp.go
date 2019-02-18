@@ -5,24 +5,29 @@ import (
 	"math/rand"
 )
 
-type SSRPSvr struct {
+type SSRPSvr interface {
+	ExchangePub(*big.Int) (uint64, *big.Int, *big.Int)
+	CheckAuth(string) bool
+}
+
+type goodSSRP struct {
 	u, v, A, b, B *big.Int
 
 	salt uint64
 	N, g *big.Int
 }
 
-func newSimpleSRPSvr(pass string) *SSRPSvr {
+func newSimpleSRPSvr(pass string) *goodSSRP {
 	N, g := primes()
 
 	salt := rand.Uint64()
 	x := saltHmac(salt, pass)
 	v := &big.Int{}
 	v.Exp(g, x, N)
-	return &SSRPSvr{v: v, salt: salt, N: N, g: g}
+	return &goodSSRP{v: v, salt: salt, N: N, g: g}
 }
 
-func (s *SSRPSvr) ExchangePub(A *big.Int) (uint64, *big.Int, *big.Int) {
+func (s *goodSSRP) ExchangePub(A *big.Int) (uint64, *big.Int, *big.Int) {
 	s.A = A
 	b := randUint()
 
@@ -39,7 +44,7 @@ func (s *SSRPSvr) ExchangePub(A *big.Int) (uint64, *big.Int, *big.Int) {
 	return s.salt, B, u
 }
 
-func (s *SSRPSvr) CheckAuth(cauth string) bool {
+func (s *goodSSRP) CheckAuth(cauth string) bool {
 	//S = (A * V ** u) ** b % N
 	S := &big.Int{}
 	S.Exp(s.v, s.u, s.N)
@@ -53,7 +58,7 @@ func (s *SSRPSvr) CheckAuth(cauth string) bool {
 	return false
 }
 
-func smplSRPLogin(svr *SSRPSvr, pass string) bool {
+func smplSRPLogin(svr SSRPSvr, pass string) bool {
 	N, g := primes()
 	a := randUint()
 	A := &big.Int{}
