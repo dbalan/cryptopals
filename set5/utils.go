@@ -13,6 +13,12 @@ func randPasswd() string {
 	return pass[int(n)%len(pass)]
 }
 
+func randUint() *big.Int {
+	x := &big.Int{}
+	x.SetUint64(rand.Uint64())
+	return x
+}
+
 func encodeUint64(x uint64) []byte {
 	buf := make([]byte, 8)
 	for i := 0; i < 8; i++ {
