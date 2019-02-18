@@ -6,14 +6,21 @@ import (
 )
 
 func TestRegularLogin(t *testing.T) {
-	assert.Equal(t, false, login("hello world"))
-	assert.Equal(t, true, login("5upers4cr4t"))
+	N, _ = primes()
+	pass := randPasswd()
+	server := NewServer(pass)
+	assert.Equal(t, false, login(server, "hello world"))
+	assert.Equal(t, true, login(server, pass))
 }
 
 func TestLoginZero(t *testing.T) {
-	assert.Equal(t, true, loginWithZero())
+	N, _ = primes()
+	server := NewServer(randPasswd())
+	assert.Equal(t, true, loginWithZero(server))
 }
 
 func TestLoginWithN(t *testing.T) {
-	assert.Equal(t, true, loginWithN())
+	N, _ = primes()
+	server := NewServer(randPasswd())
+	assert.Equal(t, true, loginWithN(server))
 }

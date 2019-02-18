@@ -22,11 +22,10 @@ type Server struct {
 	A, B *big.Int
 }
 
-func NewServer() *Server {
+func NewServer(pass string) *Server {
 	svr := &Server{I: username}
-	password := "5upers4cr4t"
 	salt := rand.Uint64()
-	x := saltHmac(salt, password)
+	x := saltHmac(salt, pass)
 
 	svr.salt = salt
 	// generate v and store it
@@ -74,11 +73,9 @@ func (s *Server) CheckAuth(cauth string) bool {
 	return false
 }
 
-func login(password string) bool {
+func login(server *Server, password string) bool {
 	// agree on N
 	N, _ = primes()
-	// connect to server
-	server := NewServer()
 
 	// get a random key
 	a := &big.Int{}
@@ -115,11 +112,9 @@ func login(password string) bool {
 	return server.CheckAuth(cauth)
 }
 
-func loginWithZero() bool {
+func loginWithZero(server *Server) bool {
 	// agree on N
 	N, _ = primes()
-	// connect to server
-	server := NewServer()
 
 	A := big.NewInt(0)
 
@@ -133,10 +128,9 @@ func loginWithZero() bool {
 	return server.CheckAuth(cauth)
 }
 
-func loginWithN() bool {
+func loginWithN(server *Server) bool {
 	N, _ = primes()
 
-	server := NewServer()
 	// try multiples of N
 	mul := big.NewInt(rand.Int63n(10))
 	mul.Abs(mul)

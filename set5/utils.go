@@ -4,7 +4,14 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/big"
+	"math/rand"
 )
+
+func randPasswd() string {
+	n := rand.Uint32()
+	pass := []string{"hello", "world", "of", "simple", "passwords"}
+	return pass[int(n)%len(pass)]
+}
 
 func encodeUint64(x uint64) []byte {
 	buf := make([]byte, 8)
