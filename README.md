@@ -69,5 +69,5 @@ done
 1. Implement Secure Remote Password (SRP): https://github.com/dbalan/cryptopals/blob/master/set5/simple_srp.go
 1. Break SRP with a zero key: https://github.com/dbalan/cryptopals/blob/master/set5/srp_test.go
 1. Offline dictionary attack on simplified SRP: https://github.com/dbalan/cryptopals/blob/master/set5/evil_ssrp.go
-1. Implement RSA
+1. Implement RSA: https://github.com/dbalan/cryptopals/blob/master/rsa/rsa.go
 1. Implement an E=3 RSA Broadcast attack
