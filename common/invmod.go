@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"math/big"
 )
 
@@ -24,14 +25,14 @@ func EGCD(A, B *big.Int) *big.Int {
 	return EGCD(B, quote)
 }
 
-func InvMod(a, n *big.Int) *big.Int {
+func InvMod(a, n *big.Int) (*big.Int, error) {
 	zero := big.NewInt(0)
 
 	t := big.NewInt(0)
 	nt := big.NewInt(1)
 
-	r := n
-	nr := a
+	r := new(big.Int).Set(n)
+	nr := new(big.Int).Set(a)
 
 	for nr.Cmp(zero) != 0 {
 		quot := &big.Int{}
@@ -52,11 +53,11 @@ func InvMod(a, n *big.Int) *big.Int {
 	}
 
 	if r.Cmp(big.NewInt(1)) == 1 {
-		panic("not invertible")
+		return nil, errors.New("Not invertible")
 	}
 
 	if t.Cmp(zero) == -1 {
 		t.Add(t, n)
 	}
-	return t
+	return t, nil
 }

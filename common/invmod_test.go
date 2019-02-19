@@ -21,6 +21,7 @@ func TestEGCD(t *testing.T) {
 }
 
 func TestInvMod(t *testing.T) {
-	p := InvMod(big.NewInt(17), big.NewInt(3120))
+	p, err := InvMod(big.NewInt(17), big.NewInt(3120))
+	assert.Nil(t, err)
 	assert.Equal(t, big.NewInt(2753), p)
 }
