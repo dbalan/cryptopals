@@ -66,8 +66,8 @@ done
 1. Implement Diffie-Hellman: https://github.com/dbalan/cryptopals/blob/master/set5/dh.go
 1. Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection: https://github.com/dbalan/cryptopals/blob/master/set5/dh_mitm_test.go
 1. Implement DH with negotiated groups, and break with malicious "g" parameters: https://github.com/dbalan/cryptopals/blob/master/set5/dh_mitm_primes.go
-1. Implement Secure Remote Password (SRP)
-1. Break SRP with a zero key
-1. Offline dictionary attack on simplified SRP
+1. Implement Secure Remote Password (SRP): https://github.com/dbalan/cryptopals/blob/master/set5/simple_srp.go
+1. Break SRP with a zero key: https://github.com/dbalan/cryptopals/blob/master/set5/srp_test.go
+1. Offline dictionary attack on simplified SRP: https://github.com/dbalan/cryptopals/blob/master/set5/evil_ssrp.go
 1. Implement RSA
 1. Implement an E=3 RSA Broadcast attack
