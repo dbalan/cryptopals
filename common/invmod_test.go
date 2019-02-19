@@ -19,3 +19,8 @@ func TestEGCD(t *testing.T) {
 		assert.Equal(t, cs.GCD, EGCD(cs.A, cs.B))
 	}
 }
+
+func TestInvMod(t *testing.T) {
+	p := InvMod(big.NewInt(17), big.NewInt(3120))
+	assert.Equal(t, big.NewInt(2753), p)
+}

@@ -23,3 +23,40 @@ func EGCD(A, B *big.Int) *big.Int {
 
 	return EGCD(B, quote)
 }
+
+func InvMod(a, n *big.Int) *big.Int {
+	zero := big.NewInt(0)
+
+	t := big.NewInt(0)
+	nt := big.NewInt(1)
+
+	r := n
+	nr := a
+
+	for nr.Cmp(zero) != 0 {
+		quot := &big.Int{}
+		quot.Div(r, nr)
+
+		// PSWAP:
+		// t = nt
+		// nt = t - quot*nt
+		tmp := new(big.Int).Set(nt)
+		nt.Mul(nt, quot)
+		nt.Sub(t, nt)
+		t = tmp
+
+		tmp = new(big.Int).Set(nr)
+		nr.Mul(nr, quot)
+		nr.Sub(r, nr)
+		r = tmp
+	}
+
+	if r.Cmp(big.NewInt(1)) == 1 {
+		panic("not invertible")
+	}
+
+	if t.Cmp(zero) == -1 {
+		t.Add(t, n)
+	}
+	return t
+}
