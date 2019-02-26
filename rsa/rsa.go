@@ -66,6 +66,15 @@ func prime() (*big.Int, error) {
 	return p, nil
 }
 
+// compute fermat's prime Fn
+func fermatPrime(n int64) *big.Int {
+	f := new(big.Int)
+	f.Exp(big.NewInt(2), big.NewInt(n), nil)
+	f.Exp(big.NewInt(2), f, nil)
+	f.Add(f, big.NewInt(1))
+	return f
+}
+
 func genprimes() (p, q *big.Int, err error) {
 	p, err = prime()
 	if err != nil {
@@ -97,11 +106,12 @@ func GenKeyPair() (e, d, n *big.Int, err error) {
 	totient := new(big.Int).Mul(p_1, q_1)
 
 	// e should be coprime to totient, or not choose another
-	e = big.NewInt(3)
+	// Fermat prime F0
+	e = fermatPrime(0)
 	// fixme: pick a random e in (1, totient)
-	for common.EGCD(totient, e).Cmp(big.NewInt(1)) != 0 {
-		e.Add(e, big.NewInt(1))
-
+	var i int64
+	for i = 1; common.EGCD(totient, e).Cmp(big.NewInt(1)) != 0; i++ {
+		e = fermatPrime(i)
 	}
 
 	d, err = common.InvMod(e, totient)
