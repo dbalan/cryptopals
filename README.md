@@ -72,3 +72,13 @@ done
 1. Offline dictionary attack on simplified SRP: https://github.com/dbalan/cryptopals/blob/master/set5/evil_ssrp.go
 1. Implement RSA: https://github.com/dbalan/cryptopals/blob/master/rsa/rsa.go
 1. Implement an E=3 RSA Broadcast attack: https://github.com/dbalan/cryptopals/blob/master/set5/broadcast_rsa_attack_test.go
+
+### Set 6
+1. Implement unpadded message recovery oracle: https://github.com/dbalan/cryptopals/blob/master/set6/rsa_recovery_test.go
+1. Bleichenbacher's e=3 RSA Attack
+1. DSA key recovery from nonce
+1. DSA nonce recovery from repeated nonce
+1. DSA parameter tampering
+1. RSA parity oracle
+1. Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case)
+1. Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case
