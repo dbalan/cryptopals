@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"github.com/dbalan/cryptopals/common"
+	"github.com/dbalan/cryptopals/sha"
 	"math/big"
 )
 
@@ -139,4 +140,26 @@ func Decrypt(ct, priv, N *big.Int) ([]byte, error) {
 		return nil, err
 	}
 	return msg, nil
+}
+
+func Sign(msg []byte, priv, N *big.Int) string {
+	// msg to int
+
+	hmsg := common.EncodeHexString(sha.SHA(msg))
+	hnum, _ := new(big.Int).SetString(hmsg, 16)
+
+	s := op(hnum, priv, N)
+	return s.Text(16)
+}
+
+func VerifySign(msg []byte, sign string, pub, N *big.Int) bool {
+
+	hsign, _ := new(big.Int).SetString(sign, 16)
+
+	s := op(hsign, pub, N)
+	// s == hash(msg)
+	hmsg := common.EncodeHexString(sha.SHA(msg))
+	actual, _ := new(big.Int).SetString(hmsg, 16)
+
+	return (actual.Cmp(s) == 0)
 }

@@ -34,3 +34,15 @@ func TestRSA(t *testing.T) {
 	assert.Equal(t, msg, gmsg)
 
 }
+
+func TestRSASigning(t *testing.T) {
+	msg := []byte("hello word")
+	pub, priv, n, err := GenKeyPair()
+	assert.Nil(t, err)
+
+	sig := Sign(msg, priv, n)
+	verify := VerifySign(msg, sig, pub, n)
+	assert.Equal(t, true, verify)
+	verify = VerifySign(msg, "512ba0e938d862261a9914c7f5370dab3d7c1695", pub, n)
+	assert.NotEqual(t, true, verify)
+}
