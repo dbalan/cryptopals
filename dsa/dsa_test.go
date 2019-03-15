@@ -17,14 +17,12 @@ func TestInvers(t *testing.T) {
 }
 
 func TestDSASigning(t *testing.T) {
-	p, q, g := getDSAParams()
-
-	x, y, err := KeyPair(p, g)
+	x, y, err := KeyPair()
 	assert.Nil(t, err)
 
 	msg := []byte("jebus")
-	r, s, err := Sign(msg, x, p, q, g)
+	r, s, err := Sign(msg, x)
 	assert.Nil(t, err)
-	sig := Verify(msg, r, s, y, p, g, q)
+	sig := Verify(msg, r, s, y)
 	assert.True(t, sig)
 }

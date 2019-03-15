@@ -36,7 +36,9 @@ func getDSAParams() (p, q, g *big.Int) {
 
 // x = priv
 // y = pub
-func KeyPair(p, g *big.Int) (x, y *big.Int, err error) {
+func KeyPair() (x, y *big.Int, err error) {
+	p, _, g := getDSAParams()
+
 	x, err = rand.Int(rand.Reader, p)
 	if err != nil {
 		return
@@ -47,7 +49,10 @@ func KeyPair(p, g *big.Int) (x, y *big.Int, err error) {
 }
 
 // Sign with SHA-1
-func Sign(msg []byte, x, p, q, g *big.Int) (r, s *big.Int, err error) {
+func Sign(msg []byte, x *big.Int) (r, s *big.Int, err error) {
+	p, q, g := getDSAParams()
+	hs := new(big.Int).SetBytes(sha.SHA(msg))
+
 kagain:
 	k, err := rand.Int(rand.Reader, q)
 	if err != nil {
@@ -62,7 +67,6 @@ kagain:
 		goto kagain
 	}
 
-	hs := new(big.Int).SetBytes(sha.SHA(msg))
 	xr := new(big.Int).Mul(x, r)
 	hs.Add(hs, xr)
 
@@ -77,7 +81,8 @@ kagain:
 	return
 }
 
-func Verify(msg []byte, r, s, y, p, g, q *big.Int) bool {
+func Verify(msg []byte, r, s, y *big.Int) bool {
+	p, q, g := getDSAParams()
 	zero := big.NewInt(0)
 
 	if r.Cmp(zero) <= 0 || r.Cmp(q) >= 0 {
