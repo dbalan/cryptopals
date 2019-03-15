@@ -53,7 +53,7 @@ func Sign(msg []byte, x *big.Int) (r, s *big.Int, err error) {
 	p, q, g := getDSAParams()
 	hs := new(big.Int).SetBytes(sha.SHA(msg))
 
-kagain:
+newk:
 	k, err := rand.Int(rand.Reader, q)
 	if err != nil {
 		return
@@ -63,8 +63,8 @@ kagain:
 	r.Mod(r, q)
 
 	if r.Cmp(big.NewInt(0)) == 0 {
-		println("kagain r == 0")
-		goto kagain
+		// try with new k
+		goto newk
 	}
 
 	xr := new(big.Int).Mul(x, r)
@@ -75,8 +75,8 @@ kagain:
 	s.Mod(s, q)
 
 	if s.Cmp(big.NewInt(0)) == 0 {
-		println("kagain s == 0")
-		goto kagain
+		// try with new k
+		goto newk
 	}
 	return
 }
