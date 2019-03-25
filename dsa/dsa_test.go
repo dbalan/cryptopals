@@ -26,3 +26,16 @@ func TestDSASigning(t *testing.T) {
 	sig := Verify(msg, r, s, y)
 	assert.True(t, sig)
 }
+
+func TestDSAComputeKey(t *testing.T) {
+	msg := []byte("foo")
+	x, _, err := KeyPair()
+	assert.Nil(t, err)
+
+	r, s, k, err := signInternal(msg, x)
+	assert.Nil(t, err)
+
+	hs := hsmsg(msg)
+	newx := ComputeKey(k, r, s, hs)
+	assert.Equal(t, 0, newx.Cmp(x), "mismatch x")
+}

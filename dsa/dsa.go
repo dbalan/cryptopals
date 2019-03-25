@@ -37,9 +37,9 @@ func getDSAParams() (p, q, g *big.Int) {
 // x = priv
 // y = pub
 func KeyPair() (x, y *big.Int, err error) {
-	p, _, g := getDSAParams()
+	p, q, g := getDSAParams()
 
-	x, err = rand.Int(rand.Reader, p)
+	x, err = rand.Int(rand.Reader, q)
 	if err != nil {
 		return
 	}
@@ -48,13 +48,18 @@ func KeyPair() (x, y *big.Int, err error) {
 	return
 }
 
-// Sign with SHA-1
 func Sign(msg []byte, x *big.Int) (r, s *big.Int, err error) {
+	r, s, _, err = signInternal(msg, x)
+	return
+}
+
+// Sign with SHA-1
+func signInternal(msg []byte, x *big.Int) (r, s, k *big.Int, err error) {
 	p, q, g := getDSAParams()
-	hs := new(big.Int).SetBytes(sha.SHA(msg))
+	hs := hsmsg(msg)
 
 newk:
-	k, err := rand.Int(rand.Reader, q)
+	k, err = rand.Int(rand.Reader, q)
 	if err != nil {
 		return
 	}
@@ -94,7 +99,7 @@ func Verify(msg []byte, r, s, y *big.Int) bool {
 	}
 
 	w := new(big.Int).Exp(s, big.NewInt(-1), q)
-	hs := new(big.Int).SetBytes(sha.SHA(msg))
+	hs := hsmsg(msg)
 
 	u1 := new(big.Int).Mul(hs, w)
 	u1.Mod(u1, q)
@@ -109,4 +114,33 @@ func Verify(msg []byte, r, s, y *big.Int) bool {
 	v.Mod(v, q)
 
 	return v.Cmp(r) == 0
+}
+
+/*
+ *         (s * k) - H(msg)
+ *     x = ----------------  mod q
+ *                 r
+ */
+func ComputeKey(k, r, s, hs *big.Int) *big.Int {
+	_, q, _ := getDSAParams()
+	/*
+		println("k = 0x" + k.Text(16))
+		println("r = 0x" + r.Text(16))
+		println("s = 0x" + s.Text(16))
+		println("hs = 0x" + hs.Text(16))
+		println("q  = 0x" + q.Text(16))
+	*/
+	u := new(big.Int).Set(s)
+	u.Mul(u, k)
+	u.Sub(u, hs)
+
+	rinv := big.NewInt(-1)
+	rinv.Exp(r, rinv, q)
+	u.Mul(u, rinv)
+	u.Mod(u, q)
+	return u
+}
+
+func hsmsg(msg []byte) *big.Int {
+	return new(big.Int).SetBytes(sha.SHA(msg))
 }
