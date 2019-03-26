@@ -19,9 +19,9 @@ So be friendly, a matter of life and death, just like a etch-a-sketch
 	sstr = "857042759984254168557880549501802188789837994940"
 )
 
-func fromStr(s string) *big.Int {
+func fromStr(s string, base int) *big.Int {
 	t := new(big.Int)
-	t.SetString(s, 10)
+	t.SetString(s, base)
 	return t
 }
 
@@ -38,8 +38,8 @@ func getKey() *big.Int {
 	hs := new(big.Int).SetBytes(sha.SHA([]byte(msg)))
 
 	// y := fromStr(ystr)
-	r := fromStr(rstr)
-	s := fromStr(sstr)
+	r := fromStr(rstr, 10)
+	s := fromStr(sstr, 10)
 
 	for k := 0; k <= 65536; k++ {
 		x := dsa.ComputeKey(big.NewInt(int64(k)), r, s, hs)

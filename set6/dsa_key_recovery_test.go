@@ -22,6 +22,9 @@ func TestChallengeSHA(t *testing.T) {
 }
 
 func TestBForceDSAKey(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+	}
 	x := getKey()
 	assert.True(t, matchCksum(x))
 }
