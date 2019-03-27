@@ -22,7 +22,9 @@ const (
 		"9fc95302291"
 )
 
-func getDSAParams() (p, q, g *big.Int) {
+type ParamFn func() (*big.Int, *big.Int, *big.Int)
+
+func GetDefaultParams() (p, q, g *big.Int) {
 	p = new(big.Int)
 	p.SetString(defaultP, 16)
 
@@ -37,7 +39,7 @@ func getDSAParams() (p, q, g *big.Int) {
 // x = priv
 // y = pub
 func KeyPair() (x, y *big.Int, err error) {
-	p, q, g := getDSAParams()
+	p, q, g := GetDefaultParams()
 
 	x, err = rand.Int(rand.Reader, q)
 	if err != nil {
@@ -48,14 +50,14 @@ func KeyPair() (x, y *big.Int, err error) {
 	return
 }
 
-func Sign(msg []byte, x *big.Int) (r, s *big.Int, err error) {
-	r, s, _, err = signInternal(msg, x)
+func Sign(msg []byte, x *big.Int, pf ParamFn) (r, s *big.Int, err error) {
+	r, s, _, err = signInternal(msg, x, pf)
 	return
 }
 
 // Sign with SHA-1
-func signInternal(msg []byte, x *big.Int) (r, s, k *big.Int, err error) {
-	p, q, g := getDSAParams()
+func signInternal(msg []byte, x *big.Int, pf ParamFn) (r, s, k *big.Int, err error) {
+	p, q, g := pf()
 	hs := hsmsg(msg)
 
 newk:
@@ -86,8 +88,8 @@ newk:
 	return
 }
 
-func Verify(msg []byte, r, s, y *big.Int) bool {
-	p, q, g := getDSAParams()
+func Verify(msg []byte, r, s, y *big.Int, pf ParamFn) bool {
+	p, q, g := pf()
 	zero := big.NewInt(0)
 
 	if r.Cmp(zero) <= 0 || r.Cmp(q) >= 0 {
@@ -122,7 +124,7 @@ func Verify(msg []byte, r, s, y *big.Int) bool {
  *                 r
  */
 func ComputeKey(k, r, s, hs *big.Int) *big.Int {
-	_, q, _ := getDSAParams()
+	_, q, _ := GetDefaultParams()
 	/*
 		println("k = 0x" + k.Text(16))
 		println("r = 0x" + r.Text(16))

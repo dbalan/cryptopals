@@ -26,12 +26,13 @@ func fromStr(s string, base int) *big.Int {
 }
 
 func checkKey(x *big.Int) bool {
-	rc, sc, err := dsa.Sign([]byte(msg), x)
+	rc, sc, err := dsa.Sign([]byte(msg), x, dsa.GetDefaultParams)
 	if err != nil {
 		panic(err)
 	}
 	y, _ := new(big.Int).SetString(ystr, 16)
-	return dsa.Verify([]byte(msg), rc, sc, y)
+	return dsa.Verify([]byte(msg), rc, sc, y,
+		dsa.GetDefaultParams)
 }
 
 func getKey() *big.Int {

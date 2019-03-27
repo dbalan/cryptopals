@@ -8,7 +8,7 @@ import (
 
 // Checking if inverses work the way I think they would.
 func TestInvers(t *testing.T) {
-	p, g, _ := getDSAParams()
+	p, g, _ := GetDefaultParams()
 	gi := new(big.Int).Set(g)
 	gi.Exp(g, big.NewInt(-1), p)
 	gi.Mul(gi, g)
@@ -21,9 +21,9 @@ func TestDSASigning(t *testing.T) {
 	assert.Nil(t, err)
 
 	msg := []byte("jebus")
-	r, s, err := Sign(msg, x)
+	r, s, err := Sign(msg, x, GetDefaultParams)
 	assert.Nil(t, err)
-	sig := Verify(msg, r, s, y)
+	sig := Verify(msg, r, s, y, GetDefaultParams)
 	assert.True(t, sig)
 }
 
@@ -32,7 +32,7 @@ func TestDSAComputeKey(t *testing.T) {
 	x, _, err := KeyPair()
 	assert.Nil(t, err)
 
-	r, s, k, err := signInternal(msg, x)
+	r, s, k, err := signInternal(msg, x, GetDefaultParams)
 	assert.Nil(t, err)
 
 	hs := hsmsg(msg)
