@@ -77,8 +77,8 @@ done
 1. Implement unpadded message recovery oracle: https://github.com/dbalan/cryptopals/blob/master/set6/rsa_recovery_test.go
 1. Bleichenbacher's e=3 RSA Attack : https://github.com/dbalan/cryptopals/blob/master/set6/rsa_sign_test.go
 1. DSA key recovery from nonce: https://github.com/dbalan/cryptopals/blob/master/set6/dsa_key_recovery.go
-1. DSA nonce recovery from repeated nonce
-1. DSA parameter tampering
+1. DSA nonce recovery from repeated nonce: https://github.com/dbalan/cryptopals/blob/master/set6/dsa_repeated_nonce.go
+1. DSA parameter tampering: https://github.com/dbalan/cryptopals/blob/master/set6/dsa_parameter_tampering.go
 1. RSA parity oracle
 1. Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case)
 1. Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case

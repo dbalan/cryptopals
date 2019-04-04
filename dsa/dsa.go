@@ -38,8 +38,8 @@ func GetDefaultParams() (p, q, g *big.Int) {
 
 // x = priv
 // y = pub
-func KeyPair() (x, y *big.Int, err error) {
-	p, q, g := GetDefaultParams()
+func KeyPair(pf ParamFn) (x, y *big.Int, err error) {
+	p, q, g := pf()
 
 	x, err = rand.Int(rand.Reader, q)
 	if err != nil {

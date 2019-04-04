@@ -17,7 +17,7 @@ func TestInvers(t *testing.T) {
 }
 
 func TestDSASigning(t *testing.T) {
-	x, y, err := KeyPair()
+	x, y, err := KeyPair(GetDefaultParams)
 	assert.Nil(t, err)
 
 	msg := []byte("jebus")
@@ -29,7 +29,7 @@ func TestDSASigning(t *testing.T) {
 
 func TestDSAComputeKey(t *testing.T) {
 	msg := []byte("foo")
-	x, _, err := KeyPair()
+	x, _, err := KeyPair(GetDefaultParams)
 	assert.Nil(t, err)
 
 	r, s, k, err := signInternal(msg, x, GetDefaultParams)
