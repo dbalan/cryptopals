@@ -12,7 +12,7 @@ type Server struct {
 }
 
 func NewSvr() (*Server, error) {
-	pub, priv, n, err := rsa.GenKeyPair()
+	pub, priv, n, err := rsa.GenKeyPair(128)
 	if err != nil {
 		return nil, err
 	}

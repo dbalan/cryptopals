@@ -6,14 +6,16 @@ import (
 	"testing"
 )
 
+const primeSize = 128
+
 func TestPrimes(t *testing.T) {
-	p, q, err := genprimes()
+	p, q, err := genprimes(primeSize)
 	assert.Nil(t, err)
 	assert.NotEqual(t, p, q)
 }
 
 func TestSimpleFlow(t *testing.T) {
-	pub, priv, n, err := GenKeyPair()
+	pub, priv, n, err := GenKeyPair(primeSize)
 	assert.Nil(t, err)
 	pt := big.NewInt(2323)
 
@@ -23,9 +25,14 @@ func TestSimpleFlow(t *testing.T) {
 
 }
 
+func TestLargerKeySize(t *testing.T) {
+	_, _, _, err := GenKeyPair(1024)
+	assert.Nil(t, err)
+}
+
 func TestRSA(t *testing.T) {
 	msg := []byte("hello world")
-	pub, priv, n, err := GenKeyPair()
+	pub, priv, n, err := GenKeyPair(primeSize)
 	assert.Nil(t, err)
 
 	ct := Encrypt(msg, pub, n)
@@ -37,7 +44,7 @@ func TestRSA(t *testing.T) {
 
 func TestRSASigning(t *testing.T) {
 	msg := []byte("hello word")
-	pub, priv, n, err := GenKeyPair()
+	pub, priv, n, err := GenKeyPair(primeSize)
 	assert.Nil(t, err)
 
 	sig := Sign(msg, priv, n)

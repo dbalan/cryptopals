@@ -8,8 +8,6 @@ import (
 	"math/big"
 )
 
-const PrimeSize = 128
-
 func naivePrimalityCheck(p *big.Int) bool {
 	zero := big.NewInt(0)
 
@@ -51,9 +49,9 @@ func naivePrimalityCheck(p *big.Int) bool {
 	return true
 }
 
-func prime() (*big.Int, error) {
+func prime(size int) (*big.Int, error) {
 	//again:
-	p, err := rand.Prime(rand.Reader, PrimeSize)
+	p, err := rand.Prime(rand.Reader, size)
 	if err != nil {
 		return nil, err
 	}
@@ -76,14 +74,14 @@ func fermatPrime(n int64) *big.Int {
 	return f
 }
 
-func genprimes() (p, q *big.Int, err error) {
-	p, err = prime()
+func genprimes(size int) (p, q *big.Int, err error) {
+	p, err = prime(size)
 	if err != nil {
 		return
 	}
 
 get_another:
-	q, err = prime()
+	q, err = prime(size)
 	if err != nil {
 		return
 	}
@@ -94,8 +92,8 @@ get_another:
 	return
 }
 
-func GenKeyPair() (e, d, n *big.Int, err error) {
-	p, q, err := genprimes()
+func GenKeyPair(size int) (e, d, n *big.Int, err error) {
+	p, q, err := genprimes(size)
 	if err != nil {
 		return
 	}

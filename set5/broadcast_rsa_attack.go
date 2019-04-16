@@ -7,12 +7,14 @@ import (
 	"math/big"
 )
 
+const keySize = 128
+
 // mimics grabbing ciphertext out of wire
 func getCipherTextE3(msg []byte) (ct, n *big.Int, err error) {
 	three := big.NewInt(3)
 	pub := new(big.Int)
 try_again:
-	pub, _, n, err = rsa.GenKeyPair()
+	pub, _, n, err = rsa.GenKeyPair(keySize)
 	if err != nil {
 		return
 	}
