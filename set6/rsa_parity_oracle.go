@@ -75,8 +75,8 @@ func parityOracleAttack(e, n, ct *big.Int,
 		if upper.Cmp(lower) == 0 {
 			break
 		}
-
-		printMsg(upper)
+		// screws with CI if you print random hex values.
+		// printMsg(upper)
 	}
 	printMsg(upper)
 }
