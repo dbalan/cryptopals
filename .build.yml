@@ -5,11 +5,7 @@ sources:
   - https://github.com/dbalan/cryptopals
 tasks:
   - cryptopals: |
-     mkdir -p go/src/github.com/dbalan
-     mv cryptopals go/src/github.com/dbalan/
-     cd go/src/github.com/dbalan/cryptopals/
-     go get -v ./...
-     go get -v -t ./...
+     cd cryptopals 
      go test -v ./...
 
 
