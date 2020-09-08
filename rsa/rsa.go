@@ -130,6 +130,11 @@ func Encrypt(msg []byte, pub, N *big.Int) *big.Int {
 	return op(m, pub, N)
 }
 
+func DecryptRaw(ct, priv, N *big.Int) ([]byte) {
+	m := op(ct, priv, N)
+	return m.Bytes()
+}
+
 func Decrypt(ct, priv, N *big.Int) ([]byte, error) {
 	pt := op(ct, priv, N)
 	var msg []byte
