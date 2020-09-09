@@ -9,7 +9,8 @@ import (
 	"os"
 )
 
-const size = 256
+// size is keysize, for x modulus you'd set x/2
+const size = 768/2
 
 /* impliment ceil division using floor div
  */
@@ -41,10 +42,11 @@ func PKCSPad(msg []byte, n int) []byte {
  */
 func PKCSUnpad(eb []byte) ([]byte, error) {
 	padout := bytes.Split(eb, []byte{byte(0)})
-	if len(padout) != 2 {
-		return nil, fmt.Errorf("got more than two 00 bytes")
+	if len(padout) < 2 {
+		return nil, fmt.Errorf("no 00 bytes")
 	}
-	return padout[1], nil
+	// this is terrible terrible unpadding, don't even think about using it.
+	return padout[len(padout)-1], nil
 }
 
 func PKCSOracle(m []byte) (*big.Int, *big.Int, *big.Int, func(*big.Int) bool) {
@@ -58,10 +60,11 @@ func PKCSOracle(m []byte) (*big.Int, *big.Int, *big.Int, func(*big.Int) bool) {
 	bytesize := (2 * size) / 8
 	paddedMsg := PKCSPad(m, bytesize)
 
-	nlim := new(big.Int).Exp(big.NewInt(2), big.NewInt(504), nil)
-	blim := new(big.Int).Exp(big.NewInt(2), big.NewInt(512), nil)
 
-	//
+	// not needed, but checking assertion
+	nlim := new(big.Int).Exp(big.NewInt(2), big.NewInt(size*2 - 8), nil)
+	blim := new(big.Int).Exp(big.NewInt(2), big.NewInt(size*2), nil)
+
 	if n.Cmp(nlim) < 0 || n.Cmp(blim) >= 0 {
 		panic("n out of bounds")
 	}
@@ -101,7 +104,7 @@ func PKCSOracleAttack(ct, pub, n *big.Int, oracle func(*big.Int) bool) ([]byte, 
 	two := big.NewInt(2)
 
 	// specific constants
-	k := big.NewInt(512 / 8)
+	k := big.NewInt((size * 2) / 8)
 	k28 := new(big.Int).Sub(k, two)
 	k28.Mul(k28, big.NewInt(8))
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const pt = "kick it, CC"
+const pt = "Dora: We did it"
 
 func TestPKCSOracle(t *testing.T) {
 	msg := []byte(pt)

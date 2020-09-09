@@ -79,4 +79,4 @@ go test -v ./...
 1. DSA parameter tampering: https://github.com/dbalan/cryptopals/blob/master/set6/dsa_parameter_tampering.go
 1. RSA parity oracle: https://github.com/dbalan/cryptopals/blob/master/set6/rsa_parity_oracle.go
 1. Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case): https://github.com/dbalan/cryptopals/blob/master/set6/pkcs_padding_oracle.go
-1. Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case
+1. Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case: https://github.com/dbalan/cryptopals/blob/master/set6/pkcs_padding_oracle.go
